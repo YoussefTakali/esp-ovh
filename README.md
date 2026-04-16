@@ -66,7 +66,7 @@ cd esprithub
    ng serve
    ```
 3. **Access the app:**
-   - Open [http://https://esprithubfront-production.up.railway.app](http://https://esprithubfront-production.up.railway.app) in your browser.
+   - Open [http://localhost:8090](http://localhost:8090) in your browser.
 
 ## Project Structure
 ```

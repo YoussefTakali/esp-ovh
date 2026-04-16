@@ -5,8 +5,8 @@ $env:GITHUB_CLIENT_ID = "Ov23lipGNQsjO5oFhS91"
 $env:GITHUB_CLIENT_SECRET = "9057808c13ab3774b31a600dea377a2c87b50690"
 $env:GITHUB_SCOPE = "user:email,repo"
 $env:GITHUB_ORG_NAME = "esprithub"
-$env:GITHUB_OAUTH_REDIRECT_URI = "http://https://esprithubfront-production.up.railway.app/auth/github/callback"
-$env:FRONTEND_URL = "http://https://esprithubfront-production.up.railway.app"
+$env:GITHUB_OAUTH_REDIRECT_URI = "http://localhost:8090/auth/github/callback"
+$env:FRONTEND_URL = "http://localhost:8090"
 
 # Local Docker Postgres database
 $env:DOCKER_DB_HOST = "localhost"

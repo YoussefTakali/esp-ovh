@@ -5,8 +5,8 @@ export GITHUB_CLIENT_ID="Ov23lipGNQsjO5oFhS91"
 export GITHUB_CLIENT_SECRET="9057808c13ab3774b31a600dea377a2c87b50690"
 export GITHUB_SCOPE="user:email,repo"
 export GITHUB_ORG_NAME="esprithub"
-export GITHUB_OAUTH_REDIRECT_URI="http://https://esprithubfront-production.up.railway.app/auth/github/callback"
-export FRONTEND_URL="http://https://esprithubfront-production.up.railway.app"
+export GITHUB_OAUTH_REDIRECT_URI="http://localhost:8090/auth/github/callback"
+export FRONTEND_URL="http://localhost:8090"
 
 # Local Docker Postgres database
 export DOCKER_DB_HOST="localhost"

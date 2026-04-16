@@ -56,7 +56,7 @@ echo ""
 echo "3. Start the Angular frontend:"
 echo "   cd client && npm start"
 echo ""
-echo "4. Open http://https://esprithubfront-production.up.railway.app and test the login flow"
+echo "4. Open http://localhost:8090 and test the login flow"
 echo ""
 
 # Optionally start the services

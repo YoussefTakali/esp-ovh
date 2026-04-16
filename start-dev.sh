@@ -28,7 +28,7 @@ fi
 echo "✅ GitHub OAuth credentials loaded successfully!"
 
 # Fallback values for local development if not provided
-export FRONTEND_URL="${FRONTEND_URL:-http://https://esprithubfront-production.up.railway.app}"
+export FRONTEND_URL="${FRONTEND_URL:-http://localhost:8090}"
 export GITHUB_OAUTH_REDIRECT_URI="${GITHUB_OAUTH_REDIRECT_URI:-${FRONTEND_URL%/}/auth/github/callback}"
 echo "✅ OAuth Redirect URI: $GITHUB_OAUTH_REDIRECT_URI"
 
@@ -45,7 +45,7 @@ echo ""
 echo "Frontend (in another terminal):"
 echo "cd client && npm start"
 echo ""
-echo "Then open: http://https://esprithubfront-production.up.railway.app"
+echo "Then open: http://localhost:8090"
 echo ""
 
 # Ask if user wants to start backend now
