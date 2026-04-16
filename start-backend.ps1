@@ -19,6 +19,26 @@ Write-Host "Admin bootstrap seeding enabled: $env:BOOTSTRAP_ADMIN_EMAIL"
 Write-Host "Admin bootstrap password: [HIDDEN]"
 Write-Host ""
 
+# Normalize CORS variable naming for production setup.
+if (-not [string]::IsNullOrWhiteSpace($env:CORS_ALLOWED_ORIGINS) -and [string]::IsNullOrWhiteSpace($env:APP_CORS_ALLOWED_ORIGINS)) {
+  $env:APP_CORS_ALLOWED_ORIGINS = $env:CORS_ALLOWED_ORIGINS
+}
+
+# Domain defaults for production runtime.
+if ([string]::IsNullOrWhiteSpace($env:FRONTEND_URL)) {
+  $env:FRONTEND_URL = "https://esprithub.app"
+}
+if ([string]::IsNullOrWhiteSpace($env:APP_CORS_ALLOWED_ORIGINS)) {
+  $env:APP_CORS_ALLOWED_ORIGINS = "https://esprithub.app,https://www.esprithub.app"
+}
+if ([string]::IsNullOrWhiteSpace($env:GITHUB_OAUTH_REDIRECT_URI)) {
+  $env:GITHUB_OAUTH_REDIRECT_URI = "$($env:FRONTEND_URL.TrimEnd('/'))/auth/github/callback"
+}
+
+if ($env:GITHUB_OAUTH_REDIRECT_URI -eq "$($env:FRONTEND_URL.TrimEnd('/'))/api/v1/github/callback") {
+  $env:GITHUB_OAUTH_REDIRECT_URI = "$($env:FRONTEND_URL.TrimEnd('/'))/auth/github/callback"
+}
+
 # Set GitHub OAuth environment variables
 Write-Host "Setting GitHub OAuth Configuration..."
 $env:GITHUB_CLIENT_ID = "Ov23lipGNQsjO5oFhS91"
@@ -48,6 +68,9 @@ Write-Host "  Client ID: $env:GITHUB_CLIENT_ID"
 Write-Host "  Client Secret: [HIDDEN]"
 Write-Host "  Scope: $env:GITHUB_SCOPE"
 Write-Host "  Organization: $env:GITHUB_ORG_NAME"
+Write-Host "  Frontend URL: $env:FRONTEND_URL"
+Write-Host "  CORS Origins: $env:APP_CORS_ALLOWED_ORIGINS"
+Write-Host "  OAuth Redirect URI: $env:GITHUB_OAUTH_REDIRECT_URI"
 Write-Host "  Datasource URL: $env:SPRING_DATASOURCE_URL"
 Write-Host "  Datasource Username: $env:SPRING_DATASOURCE_USERNAME"
 Write-Host "  Datasource Password: [HIDDEN]"
