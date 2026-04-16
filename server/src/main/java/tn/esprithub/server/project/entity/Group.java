@@ -27,11 +27,15 @@ public class Group extends BaseEntity {
     // The project this group belongs to
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Project project;
 
     // The class this group belongs to
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classe_id", nullable = false)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Classe classe;
 
     // Students in this group
@@ -42,14 +46,20 @@ public class Group extends BaseEntity {
         inverseJoinColumns = @JoinColumn(name = "student_id")
     )
     @Builder.Default
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<User> students = new java.util.ArrayList<>();
 
     @ManyToMany(mappedBy = "assignedToGroups")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Task> tasks;
 
     // Repository associated with this group (optional)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "repository_id", foreignKey = @ForeignKey(name = "fk_group_repository"))
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private tn.esprithub.server.repository.entity.Repository repository;
 
     @Transient

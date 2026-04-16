@@ -91,7 +91,7 @@ public class TaskServiceImpl implements TaskService {
         try {
             notifyTaskRecipientsOnUpdate(savedTask, previousRecipients, previousVisibility, previousStatus,
                 previousDueDate, previousGraded, previousTitle, previousDescription);
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             log.warn("Task {} was updated but notification dispatch failed", savedTask.getId(), ex);
         }
         return taskMapper.toDto(savedTask);
@@ -159,7 +159,7 @@ public class TaskServiceImpl implements TaskService {
                         buildTaskAssignmentMessage(saved),
                         "INFO"
                 );
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 log.warn("Task {} was created but notification dispatch failed", saved.getId(), ex);
             }
         }

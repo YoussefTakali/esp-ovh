@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.Builder;
+import lombok.ToString;
 import tn.esprithub.server.user.entity.User;
 import tn.esprithub.server.common.entity.BaseEntity;
 
@@ -54,10 +55,14 @@ public class Classe extends BaseEntity {
     // Many-to-one relationship with level
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "niveau_id", nullable = false, foreignKey = @ForeignKey(name = "fk_classe_niveau"))
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Niveau niveau;
 
     // One-to-many relationship with students
     @OneToMany(mappedBy = "classe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<User> students;
 
     // Many-to-many relationship with teachers
@@ -67,9 +72,13 @@ public class Classe extends BaseEntity {
         joinColumns = @JoinColumn(name = "classe_id"),
         inverseJoinColumns = @JoinColumn(name = "teacher_id")
     )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<User> teachers;
 
     @ManyToMany(mappedBy = "assignedToClasses")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<tn.esprithub.server.project.entity.Task> tasks;
 
     @PrePersist

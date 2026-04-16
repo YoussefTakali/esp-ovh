@@ -40,6 +40,8 @@ public class Task extends BaseEntity {
         joinColumns = @JoinColumn(name = "task_id"),
         inverseJoinColumns = @JoinColumn(name = "group_id")
     )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Group> assignedToGroups;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -48,6 +50,8 @@ public class Task extends BaseEntity {
         joinColumns = @JoinColumn(name = "task_id"),
         inverseJoinColumns = @JoinColumn(name = "student_id")
     )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<User> assignedToStudents;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -56,6 +60,8 @@ public class Task extends BaseEntity {
         joinColumns = @JoinColumn(name = "task_id"),
         inverseJoinColumns = @JoinColumn(name = "classe_id")
     )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Classe> assignedToClasses;
 
     @Column(name = "due_date")
@@ -80,6 +86,8 @@ public class Task extends BaseEntity {
         joinColumns = @JoinColumn(name = "task_id"),
         inverseJoinColumns = @JoinColumn(name = "project_id")
     )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Project> projects;
 
     public List<Project> getProjects() {

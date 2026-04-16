@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -74,25 +75,30 @@ public class User extends BaseEntity implements UserDetails {
     
     // For chiefs - one-to-one relationship with department
     @OneToOne(mappedBy = "chief", fetch = FetchType.LAZY)
+    @ToString.Exclude
     private tn.esprithub.server.academic.entity.Departement chiefOfDepartement;
     
     // For teachers - many-to-one relationship with department
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "departement_id", foreignKey = @ForeignKey(name = "fk_user_departement"))
+    @ToString.Exclude
     private tn.esprithub.server.academic.entity.Departement departement;
     
     // For students - many-to-one relationship with class
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classe_id", foreignKey = @ForeignKey(name = "fk_user_classe"))
+    @ToString.Exclude
     private tn.esprithub.server.academic.entity.Classe classe;
     
     // For teachers - many-to-many relationship with classes they teach
     @ManyToMany(mappedBy = "teachers", fetch = FetchType.LAZY)
     @com.fasterxml.jackson.annotation.JsonIgnore
+    @ToString.Exclude
     private List<tn.esprithub.server.academic.entity.Classe> teachingClasses;
 
     @ManyToMany(mappedBy = "assignedToStudents")
     @com.fasterxml.jackson.annotation.JsonIgnore
+    @ToString.Exclude
     private List<tn.esprithub.server.project.entity.Task> tasks;
 
     // UserDetails implementation

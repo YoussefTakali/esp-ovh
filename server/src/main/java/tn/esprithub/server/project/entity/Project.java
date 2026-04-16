@@ -31,6 +31,8 @@ public class Project extends BaseEntity {
     // The teacher who created the project
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private User createdBy;
 
     // Classes assigned to this project
@@ -40,14 +42,20 @@ public class Project extends BaseEntity {
         joinColumns = @JoinColumn(name = "project_id"),
         inverseJoinColumns = @JoinColumn(name = "classe_id")
     )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Classe> classes;
 
     // Groups in this project
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Group> groups;
 
     // Tasks in this project
     @ManyToMany(mappedBy = "projects")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Task> tasks;
 
     // Collaborators on this project (including the creator if desired)
@@ -57,6 +65,8 @@ public class Project extends BaseEntity {
         joinColumns = @JoinColumn(name = "project_id"),
         inverseJoinColumns = @JoinColumn(name = "user_id")
     )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<User> collaborators;
 
     @Column(name = "deadline")
