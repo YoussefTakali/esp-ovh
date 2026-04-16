@@ -573,7 +573,7 @@ export class TeacherTasksComponent implements OnInit {
       description: this.addTaskForm.description,
       dueDate: this.addTaskForm.dueDate,
       status: this.addTaskForm.status,
-      isGraded: this.addTaskForm.isGraded,
+      graded: this.addTaskForm.isGraded,
       visible: this.addTaskForm.visible,
       type: this.addTaskForm.scopeType, // <-- PATCHED: send type
       projectIds: projectIds,

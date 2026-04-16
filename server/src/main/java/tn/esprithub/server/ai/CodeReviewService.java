@@ -239,18 +239,59 @@ public class CodeReviewService {
         }
     }
 
+    /**
+     * Generate a conversational assistant response.
+     * Reuses the same provider URL, API key and model as code review flows.
+     */
+    public String chatWithAssistant(String message, String context) {
+        if (!hasText(message)) {
+            throw new IllegalArgumentException("Message cannot be empty");
+        }
+
+        if (!isAiConfigured() && !testMode) {
+            log.warn("AI provider is not configured, skipping chatbot response");
+            throw new IllegalStateException("AI chatbot not available - provider API key not configured");
+        }
+
+        if (testMode || !isAiConfigured()) {
+            return buildChatTestResponse(message, context);
+        }
+
+        try {
+            String prompt = buildAssistantChatPrompt(message, context);
+            String reply = callChatCompletion(prompt, buildAssistantSystemInstruction());
+            return sanitizeAssistantReply(reply);
+        } catch (Exception e) {
+            log.error("Error generating chatbot response with AI", e);
+
+            if (e.getMessage() != null && e.getMessage().contains("Rate limit")) {
+                return buildChatTestResponse(message, context);
+            }
+
+            throw new RuntimeException("Error generating chatbot response: " + e.getMessage(), e);
+        }
+    }
+
     private String callChatCompletion(String prompt) {
+        return callChatCompletion(prompt, buildSystemInstruction());
+    }
+
+    private String callChatCompletion(String prompt, String systemInstruction) {
         try {
             Thread.sleep(800);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
 
+        String resolvedSystemInstruction = hasText(systemInstruction)
+                ? systemInstruction
+                : buildSystemInstruction();
+
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", aiModel);
         requestBody.put("messages", List.of(Map.of(
             "role", "system",
-            "content", buildSystemInstruction()
+            "content", resolvedSystemInstruction
         ), Map.of(
             "role", "user",
             "content", prompt
@@ -786,6 +827,46 @@ public class CodeReviewService {
                 + "Do not include markdown, code fences, or explanations outside JSON. "
                 + "Use realistic risk and grade values based on evidence in the input. "
                 + "Do not invent files, rows, secrets, or vulnerabilities not explicitly shown.";
+    }
+
+    private String buildAssistantSystemInstruction() {
+        return "You are Esprithub AI Assistant for software engineering students and teachers. "
+                + "Provide accurate, practical and concise answers. "
+                + "Use markdown when useful, and do not force JSON output unless explicitly requested.";
+    }
+
+    private String buildAssistantChatPrompt(String message, String context) {
+        String effectiveContext = hasText(context)
+                ? context.trim()
+                : "No additional context provided.";
+
+        return String.format("""
+                Conversation context:
+                %s
+
+                User message:
+                %s
+                """, effectiveContext, message);
+    }
+
+    private String sanitizeAssistantReply(String reply) {
+        if (!hasText(reply)) {
+            return "I could not generate a response. Please try again.";
+        }
+        return reply.trim();
+    }
+
+    private String buildChatTestResponse(String message, String context) {
+        String effectiveContext = hasText(context)
+                ? context.trim()
+                : "No additional context provided.";
+
+        return String.format(
+                Locale.ROOT,
+                "AI chat test mode response.%nContext: %s%nRequest: %s%nTip: configure app.ai.provider.* to enable live model responses.",
+                effectiveContext,
+                message.trim()
+        );
     }
 
     private CodeReviewResult normalizeTaskAlignedResult(

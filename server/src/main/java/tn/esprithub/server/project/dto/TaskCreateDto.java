@@ -1,5 +1,7 @@
 package tn.esprithub.server.project.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import tn.esprithub.server.project.enums.TaskAssignmentType;
 import tn.esprithub.server.project.enums.TaskStatus;
@@ -19,7 +21,9 @@ public class TaskCreateDto {
     private List<UUID> studentIds;
     private List<UUID> classeIds;
     private TaskStatus status;
+    @JsonAlias("isGraded")
     private Boolean graded;
+    @JsonProperty("visible")
     private boolean isVisible;
 
     public Boolean getGraded() {

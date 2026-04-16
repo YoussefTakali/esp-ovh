@@ -1,5 +1,6 @@
 package tn.esprithub.server.project.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tn.esprithub.server.project.entity.Task;
 import tn.esprithub.server.project.repository.TaskRepository;
@@ -29,6 +30,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
@@ -86,8 +88,12 @@ public class TaskServiceImpl implements TaskService {
         }
 
         Task savedTask = taskRepository.save(task);
-        notifyTaskRecipientsOnUpdate(savedTask, previousRecipients, previousVisibility, previousStatus,
+        try {
+            notifyTaskRecipientsOnUpdate(savedTask, previousRecipients, previousVisibility, previousStatus,
                 previousDueDate, previousGraded, previousTitle, previousDescription);
+        } catch (Exception ex) {
+            log.warn("Task {} was updated but notification dispatch failed", savedTask.getId(), ex);
+        }
         return taskMapper.toDto(savedTask);
     }
 
@@ -145,13 +151,17 @@ public class TaskServiceImpl implements TaskService {
         }
         Task saved = taskRepository.save(task);
         if (saved.isVisible()) {
-            List<User> recipients = collectTaskRecipients(saved);
-            notificationService.createInAppNotifications(
-                    recipients,
-                    "New task assigned: " + saved.getTitle(),
-                    buildTaskAssignmentMessage(saved),
-                    "INFO"
-            );
+            try {
+                List<User> recipients = collectTaskRecipients(saved);
+                notificationService.createInAppNotifications(
+                        recipients,
+                        "New task assigned: " + saved.getTitle(),
+                        buildTaskAssignmentMessage(saved),
+                        "INFO"
+                );
+            } catch (Exception ex) {
+                log.warn("Task {} was created but notification dispatch failed", saved.getId(), ex);
+            }
         }
         return java.util.List.of(taskMapper.toDto(saved));
     }

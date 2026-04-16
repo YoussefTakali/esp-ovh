@@ -1,7 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AiService, CodeReviewResult, CodeAnalysisRequest } from '../../services/ai.service';
+import { AiService, ChatbotResponse, CodeReviewResult, CodeAnalysisRequest } from '../../services/ai.service';
 import { SnackbarService } from '../../shared/services/snackbar.service';
+
+interface ChatHistoryItem {
+  role: 'user' | 'assistant';
+  content: string;
+  createdAt: Date;
+}
 
 @Component({
   selector: 'app-ai-code-review',
@@ -12,12 +18,15 @@ export class AiCodeReviewComponent implements OnInit {
 
   analysisForm: FormGroup;
   diffForm: FormGroup;
+  chatForm: FormGroup;
   result: CodeReviewResult | null = null;
   isLoading = false;
+  isChatLoading = false;
   selectedLanguage = 'java';
   selectedTab = 'code';
   multiLangResult: any = null;
   performanceResult: any = null;
+  chatHistory: ChatHistoryItem[] = [];
 
   languages = [
     { value: 'java', label: 'Java' },
@@ -119,11 +128,17 @@ index 1a2b3c4..5d6e7f8 100644
       diff: ['', Validators.required],
       language: ['java', Validators.required]
     });
+
+    this.chatForm = this.fb.group({
+      message: ['', [Validators.required, Validators.maxLength(4000)]],
+      context: ['']
+    });
   }
 
   ngOnInit(): void {
     this.loadExample();
     this.loadDiffExample();
+    this.initializeChatHistory();
   }
 
   /**
@@ -319,6 +334,78 @@ index 1a2b3c4..5d6e7f8 100644
     this.selectedTab = tab;
   }
 
+  sendChatMessage(): void {
+    const rawMessage = this.chatForm.get('message')?.value;
+    const message = typeof rawMessage === 'string' ? rawMessage.trim() : '';
+
+    if (!message || this.isChatLoading) {
+      return;
+    }
+
+    const rawContext = this.chatForm.get('context')?.value;
+    const context = typeof rawContext === 'string' ? rawContext.trim() : '';
+
+    this.chatHistory.push({
+      role: 'user',
+      content: message,
+      createdAt: new Date()
+    });
+
+    this.chatForm.patchValue({ message: '' });
+    this.isChatLoading = true;
+
+    this.aiService.chatWithAssistant({
+      message,
+      context: context || undefined
+    }).subscribe({
+      next: (response: ChatbotResponse) => {
+        this.isChatLoading = false;
+
+        if (response.success && response.reply) {
+          this.chatHistory.push({
+            role: 'assistant',
+            content: response.reply,
+            createdAt: new Date()
+          });
+          return;
+        }
+
+        const fallback = response.message || 'AI chatbot could not generate a response.';
+        this.chatHistory.push({
+          role: 'assistant',
+          content: fallback,
+          createdAt: new Date()
+        });
+        this.snackbarService.showError(fallback);
+      },
+      error: (error) => {
+        this.isChatLoading = false;
+        console.error('Error during chatbot request:', error);
+
+        this.chatHistory.push({
+          role: 'assistant',
+          content: 'Chatbot request failed. Please try again.',
+          createdAt: new Date()
+        });
+        this.snackbarService.showError('Error during chatbot request');
+      }
+    });
+  }
+
+  clearChatHistory(): void {
+    this.initializeChatHistory();
+  }
+
+  isChatSendDisabled(): boolean {
+    const rawMessage = this.chatForm.get('message')?.value;
+    const message = typeof rawMessage === 'string' ? rawMessage.trim() : '';
+    return this.isChatLoading || !message;
+  }
+
+  trackChatMessage(index: number): number {
+    return index;
+  }
+
   /**
    * Gets the severity color
    */
@@ -431,5 +518,13 @@ index 1a2b3c4..5d6e7f8 100644
     if (duration < 1000) return 'perf-good';
     if (duration < 3000) return 'perf-medium';
     return 'perf-bad';
+  }
+
+  private initializeChatHistory(): void {
+    this.chatHistory = [{
+      role: 'assistant',
+      content: 'Hello! I am your Esprithub AI assistant. Ask me about code, pull requests, or grading logic.',
+      createdAt: new Date()
+    }];
   }
 } 

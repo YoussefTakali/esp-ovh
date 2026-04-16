@@ -60,6 +60,33 @@ public class CodeReviewController {
     }
 
     /**
+     * Chatbot endpoint for Assistant IA module.
+     * Uses the same provider/model configuration as code review.
+     */
+    @PostMapping("/chatbot")
+    @PreAuthorize("hasAnyRole('STUDENT', 'TEACHER', 'CHIEF', 'ADMIN')")
+    public ResponseEntity<ChatbotResponse> chatWithAssistant(@RequestBody ChatbotRequest request) {
+        String message = request != null ? request.getMessage() : null;
+
+        if (message == null || message.trim().isEmpty()) {
+            return ResponseEntity.ok(ChatbotResponse.failure("Please enter a message before sending."));
+        }
+
+        long startedAt = System.currentTimeMillis();
+
+        try {
+            String reply = codeReviewService.chatWithAssistant(message, request.getContext());
+            return ResponseEntity.ok(ChatbotResponse.success(reply, System.currentTimeMillis() - startedAt));
+        } catch (IllegalArgumentException | IllegalStateException ex) {
+            log.warn("AI chatbot request rejected: {}", ex.getMessage());
+            return ResponseEntity.ok(ChatbotResponse.failure(ex.getMessage()));
+        } catch (Exception ex) {
+            log.error("Unexpected AI chatbot error", ex);
+            return ResponseEntity.ok(ChatbotResponse.failure("Failed to generate chatbot response: " + ex.getMessage()));
+        }
+    }
+
+    /**
      * Analyse un fichier complet
      */
     @PostMapping("/analyze-file")
@@ -219,6 +246,47 @@ public class CodeReviewController {
         public void setDiff(String diff) { this.diff = diff; }
         public String getLanguage() { return language; }
         public void setLanguage(String language) { this.language = language; }
+    }
+
+    public static class ChatbotRequest {
+        private String message;
+        private String context;
+
+        public String getMessage() { return message; }
+        public void setMessage(String message) { this.message = message; }
+        public String getContext() { return context; }
+        public void setContext(String context) { this.context = context; }
+    }
+
+    public static class ChatbotResponse {
+        private boolean success;
+        private String reply;
+        private String message;
+        private Long responseTimeMs;
+
+        public static ChatbotResponse success(String reply, Long responseTimeMs) {
+            ChatbotResponse response = new ChatbotResponse();
+            response.success = true;
+            response.reply = reply;
+            response.responseTimeMs = responseTimeMs;
+            return response;
+        }
+
+        public static ChatbotResponse failure(String message) {
+            ChatbotResponse response = new ChatbotResponse();
+            response.success = false;
+            response.message = message;
+            return response;
+        }
+
+        public boolean isSuccess() { return success; }
+        public void setSuccess(boolean success) { this.success = success; }
+        public String getReply() { return reply; }
+        public void setReply(String reply) { this.reply = reply; }
+        public String getMessage() { return message; }
+        public void setMessage(String message) { this.message = message; }
+        public Long getResponseTimeMs() { return responseTimeMs; }
+        public void setResponseTimeMs(Long responseTimeMs) { this.responseTimeMs = responseTimeMs; }
     }
 
     public static class FileAnalysisRequest {

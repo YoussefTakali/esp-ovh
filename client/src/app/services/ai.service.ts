@@ -20,6 +20,18 @@ export interface FileAnalysisRequest {
   language: string;
 }
 
+export interface ChatbotRequest {
+  message: string;
+  context?: string;
+}
+
+export interface ChatbotResponse {
+  success: boolean;
+  reply?: string;
+  message?: string;
+  responseTimeMs?: number;
+}
+
 export interface CodeAnalysisNotificationRequest extends CodeAnalysisRequest {
   recipientIds: number[];
   repositoryName: string;
@@ -98,6 +110,13 @@ export class AiService {
    */
   analyzeFile(request: FileAnalysisRequest): Observable<CodeReviewResult> {
     return this.http.post<CodeReviewResult>(`${this.baseUrl}/code-review/analyze-file`, request);
+  }
+
+  /**
+   * Chatbot conversation using the same AI provider configuration as code review.
+   */
+  chatWithAssistant(request: ChatbotRequest): Observable<ChatbotResponse> {
+    return this.http.post<ChatbotResponse>(`${this.baseUrl}/code-review/chatbot`, request);
   }
 
   /**

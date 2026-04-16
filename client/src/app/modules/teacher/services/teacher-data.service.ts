@@ -123,8 +123,7 @@ export class TeacherDataService {
   }
 
   createTask(task: any) {
-    // Some backend deployments return plain text for create responses.
-    return this.http.post<any>(this.buildUrl('/api/tasks'), task, { responseType: 'text' as 'json' });
+    return this.http.post<any>(this.buildUrl('/api/tasks'), task);
   }
 
   updateTaskStatus(taskId: string, status: string) {
