@@ -37,12 +37,7 @@ fi
 # Domain defaults for production runtime.
 export FRONTEND_URL="${FRONTEND_URL:-https://esprithub.app}"
 export APP_CORS_ALLOWED_ORIGINS="${APP_CORS_ALLOWED_ORIGINS:-https://esprithub.app,https://www.esprithub.app}"
-export GITHUB_OAUTH_REDIRECT_URI="${GITHUB_OAUTH_REDIRECT_URI:-${FRONTEND_URL%/}/auth/github/callback}"
-
-# Normalize a common misconfiguration where callback is set to backend path.
-if [ "${GITHUB_OAUTH_REDIRECT_URI}" = "${FRONTEND_URL%/}/api/v1/github/callback" ]; then
-    export GITHUB_OAUTH_REDIRECT_URI="${FRONTEND_URL%/}/auth/github/callback"
-fi
+export GITHUB_OAUTH_REDIRECT_URI="${FRONTEND_URL%/}/auth/github/callback"
 
 echo "👤 Admin bootstrap seeding enabled: ${BOOTSTRAP_ADMIN_EMAIL}"
 echo "🔐 Admin bootstrap password: [HIDDEN]"

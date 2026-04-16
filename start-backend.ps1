@@ -31,13 +31,7 @@ if ([string]::IsNullOrWhiteSpace($env:FRONTEND_URL)) {
 if ([string]::IsNullOrWhiteSpace($env:APP_CORS_ALLOWED_ORIGINS)) {
   $env:APP_CORS_ALLOWED_ORIGINS = "https://esprithub.app,https://www.esprithub.app"
 }
-if ([string]::IsNullOrWhiteSpace($env:GITHUB_OAUTH_REDIRECT_URI)) {
-  $env:GITHUB_OAUTH_REDIRECT_URI = "$($env:FRONTEND_URL.TrimEnd('/'))/auth/github/callback"
-}
-
-if ($env:GITHUB_OAUTH_REDIRECT_URI -eq "$($env:FRONTEND_URL.TrimEnd('/'))/api/v1/github/callback") {
-  $env:GITHUB_OAUTH_REDIRECT_URI = "$($env:FRONTEND_URL.TrimEnd('/'))/auth/github/callback"
-}
+$env:GITHUB_OAUTH_REDIRECT_URI = "$($env:FRONTEND_URL.TrimEnd('/'))/auth/github/callback"
 
 # Set GitHub OAuth environment variables
 Write-Host "Setting GitHub OAuth Configuration..."

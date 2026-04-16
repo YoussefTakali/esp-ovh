@@ -34,13 +34,7 @@ public class GitHubController {
 
     @GetMapping("/auth-url")
     public ResponseEntity<Map<String, String>> getGitHubAuthUrl() {
-        String redirectUri = githubOAuthRedirectUri;
-        if (redirectUri == null || redirectUri.isBlank()) {
-            String baseFrontendUrl = frontendUrl.endsWith("/")
-                    ? frontendUrl.substring(0, frontendUrl.length() - 1)
-                    : frontendUrl;
-            redirectUri = baseFrontendUrl + "/auth/github/callback";
-        }
+        String redirectUri = resolveRedirectUri();
         
         log.info("Generating GitHub OAuth URL");
         log.debug("GitHub Client ID: {}", githubClientId);
@@ -65,5 +59,42 @@ public class GitHubController {
                 "authUrl", authUrl,
                 "state", state
         ));
+    }
+
+    private String resolveRedirectUri() {
+        String normalizedFrontendUrl = normalizeUrl(frontendUrl, "http://localhost:4200");
+        String defaultRedirectUri = normalizedFrontendUrl + "/auth/github/callback";
+        String configuredRedirectUri = normalizeUrl(githubOAuthRedirectUri, "");
+
+        if (configuredRedirectUri.isBlank()) {
+            return defaultRedirectUri;
+        }
+
+        // Common misconfiguration: backend callback path instead of frontend callback route.
+        if (configuredRedirectUri.endsWith("/api/v1/github/callback")) {
+            log.warn("Detected invalid GitHub redirect URI '{}'. Using '{}' instead.", configuredRedirectUri, defaultRedirectUri);
+            return defaultRedirectUri;
+        }
+
+        // Keep callback on frontend route to match Angular callback component.
+        if (!configuredRedirectUri.endsWith("/auth/github/callback")) {
+            log.warn("Unsupported GitHub redirect URI '{}'. Using '{}' instead.", configuredRedirectUri, defaultRedirectUri);
+            return defaultRedirectUri;
+        }
+
+        return configuredRedirectUri;
+    }
+
+    private String normalizeUrl(String value, String fallback) {
+        String normalized = value == null ? "" : value.trim();
+        if (normalized.isEmpty()) {
+            normalized = fallback;
+        }
+
+        if (normalized.endsWith("/")) {
+            normalized = normalized.substring(0, normalized.length() - 1);
+        }
+
+        return normalized;
     }
 }
