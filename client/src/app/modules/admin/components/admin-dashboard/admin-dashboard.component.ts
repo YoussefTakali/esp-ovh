@@ -23,6 +23,9 @@ export class AdminDashboardComponent implements OnInit {
     }
   };
 
+  activeUsers = 0;
+  inactiveUsers = 0;
+
   recentUsers: User[] = [];
   recentDepartments: Departement[] = [];
   loading = true;
@@ -60,6 +63,8 @@ export class AdminDashboardComponent implements OnInit {
     try {
       const users = await firstValueFrom(this.userService.getAllUsers());
       this.stats.totalUsers = users?.length ?? 0;
+      this.activeUsers = users?.filter(user => user.isActive).length ?? 0;
+      this.inactiveUsers = this.stats.totalUsers - this.activeUsers;
       
       // Reset counters
       this.stats.usersByRole = {
@@ -117,5 +122,14 @@ export class AdminDashboardComponent implements OnInit {
       [UserRole.STUDENT]: 'Student'
     };
     return roleNames[role] ?? role;
+  }
+
+  getRoleShare(role: string): number {
+    const roleCount = this.stats.usersByRole[role as UserRole] ?? 0;
+    if (this.stats.totalUsers === 0) {
+      return 0;
+    }
+
+    return Math.round((roleCount / this.stats.totalUsers) * 100);
   }
 }

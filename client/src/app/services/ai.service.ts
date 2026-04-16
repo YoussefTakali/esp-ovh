@@ -238,12 +238,12 @@ export class AiService {
    */
   getIssueIcon(type: string): string {
     switch (type) {
-      case 'BUG': return '🐛';
-      case 'SECURITY': return '🔒';
-      case 'PERFORMANCE': return '⚡';
-      case 'STYLE': return '🎨';
-      case 'MAINTAINABILITY': return '🔧';
-      default: return '❓';
+      case 'BUG': return 'fas fa-bug';
+      case 'SECURITY': return 'fas fa-shield-alt';
+      case 'PERFORMANCE': return 'fas fa-gauge-high';
+      case 'STYLE': return 'fas fa-paint-brush';
+      case 'MAINTAINABILITY': return 'fas fa-wrench';
+      default: return 'fas fa-circle-question';
     }
   }
 
@@ -252,12 +252,12 @@ export class AiService {
    */
   getSuggestionIcon(category: string): string {
     switch (category) {
-      case 'IMPROVEMENT': return '💡';
-      case 'OPTIMIZATION': return '🚀';
-      case 'BEST_PRACTICE': return '📚';
-      case 'REFACTORING': return '🔄';
-      case 'DOCUMENTATION': return '📝';
-      default: return '💭';
+      case 'IMPROVEMENT': return 'fas fa-lightbulb';
+      case 'OPTIMIZATION': return 'fas fa-rocket';
+      case 'BEST_PRACTICE': return 'fas fa-book-open';
+      case 'REFACTORING': return 'fas fa-code-branch';
+      case 'DOCUMENTATION': return 'fas fa-file-lines';
+      default: return 'fas fa-comment-dots';
     }
   }
 } 

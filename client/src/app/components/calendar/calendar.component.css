@@ -10,7 +10,7 @@
 .calendar-hero {
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-end;
   gap: 1rem;
   padding: 1.2rem 1.4rem;
   border-radius: 18px;
@@ -335,8 +335,33 @@
   margin-bottom: 0.4rem;
 }
 
+.compose-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem;
+  background: rgba(6, 22, 35, 0.52);
+  backdrop-filter: blur(2px);
+}
+
+.compose-overlay-dismiss {
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
 .compose-panel {
+  position: relative;
+  z-index: 1;
   padding: 0.9rem;
+  width: min(760px, calc(100vw - 1.2rem));
+  max-height: 86vh;
+  overflow-y: auto;
 }
 
 .compose-header {

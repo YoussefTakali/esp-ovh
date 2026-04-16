@@ -25,6 +25,10 @@
   letter-spacing: -0.02em;
 }
 
+.header h1 i {
+  margin-right: 0.45rem;
+}
+
 .subtitle {
   margin: 0.45rem 0 0;
   opacity: 0.92;
@@ -52,6 +56,9 @@
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
 }
 
 .tab-button:hover:not(.active) {
@@ -201,6 +208,9 @@
 .tests-section h3 {
   margin: 0;
   color: var(--primary-blue);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .test-buttons {
@@ -223,6 +233,9 @@
   margin: 0;
   color: var(--primary-blue);
   font-size: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .analysis-meta {
@@ -298,6 +311,18 @@
   font-size: 0.7rem;
   letter-spacing: 0.06em;
   margin-bottom: 0.25rem;
+}
+
+.decision-title i,
+.summary-section h3 i,
+.strengths-section h3 i,
+.issues-section h3 i,
+.suggestions-section h3 i,
+.security-section h3 i,
+.performance-section h3 i,
+.practices-section h3 i,
+.error-card h3 i {
+  margin-right: 0.35rem;
 }
 
 .decision-value {
@@ -386,6 +411,11 @@
   color: var(--primary-blue);
 }
 
+.issue-icon i,
+.suggestion-icon i {
+  color: var(--primary-red);
+}
+
 .issue-severity,
 .suggestion-priority {
   color: var(--white);
@@ -448,6 +478,10 @@
 .lang-badge {
   color: var(--primary-blue);
   font-weight: 700;
+}
+
+.lang-badge i {
+  margin-right: 0.35rem;
 }
 
 .score-badge,

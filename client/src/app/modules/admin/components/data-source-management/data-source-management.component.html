@@ -1,0 +1,33 @@
+<div class="data-sources-page">
+  <header class="sources-header">
+    <h1>Data Source Management</h1>
+    <p>Search, inspect, and preselect database endpoints for data load plans.</p>
+  </header>
+
+  <section class="source-controls">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" [(ngModel)]="search" placeholder="Search sources by name, category, endpoint..." />
+    </div>
+
+    <label class="profile-field" for="sourceProfile">Source profile</label>
+    <input id="sourceProfile" type="text" [(ngModel)]="sourceProfile" placeholder="e.g. overnight-sync" />
+  </section>
+
+  <section class="source-summary">
+    <div class="summary-chip">Visible: {{ filteredSources.length }}</div>
+    <div class="summary-chip">Enabled: {{ enabledCount }}</div>
+  </section>
+
+  <section class="source-list">
+    <article class="source-card" *ngFor="let source of filteredSources">
+      <label>
+        <input type="checkbox" [(ngModel)]="source.enabled" />
+        <div class="source-content">
+          <h2>{{ source.name }}</h2>
+          <p>{{ source.category }} · {{ source.endpoint }}</p>
+        </div>
+      </label>
+    </article>
+  </section>
+</div>

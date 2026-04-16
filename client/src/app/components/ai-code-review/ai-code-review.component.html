@@ -1,7 +1,7 @@
 <div class="ai-code-review-container">
   <!-- Header -->
   <div class="header">
-    <h1>🤖 AI Code Review Assistant</h1>
+    <h1><i class="fas fa-robot"></i> AI Code Review Assistant</h1>
     <p class="subtitle">Analyze your code with artificial intelligence</p>
   </div>
 
@@ -11,19 +11,22 @@
       class="tab-button" 
       [class.active]="selectedTab === 'code'"
       (click)="setActiveTab('code')">
-      📝 Code Analysis
+      <i class="fas fa-code"></i>
+      Code Analysis
     </button>
     <button 
       class="tab-button" 
       [class.active]="selectedTab === 'diff'"
       (click)="setActiveTab('diff')">
-      🔄 Diff Analysis
+      <i class="fas fa-code-branch"></i>
+      Diff Analysis
     </button>
     <button 
       class="tab-button" 
       [class.active]="selectedTab === 'tests'"
       (click)="setActiveTab('tests')">
-      🧪 AI Tests
+      <i class="fas fa-vial"></i>
+      AI Tests
     </button>
   </div>
 
@@ -35,7 +38,7 @@
           <label for="language">Programming Language</label>
           <select id="language" formControlName="language" (change)="onLanguageChange()">
             <option *ngFor="let lang of languages" [value]="lang.value">
-              {{ lang.icon }} {{ lang.label }}
+              {{ lang.label }}
             </option>
           </select>
         </div>
@@ -64,7 +67,8 @@
         </div>
         <div class="code-actions">
           <button type="button" class="btn btn-secondary" (click)="loadExample()">
-            📋 Load Example
+            <i class="fas fa-file-code"></i>
+            Load Example
           </button>
         </div>
       </div>
@@ -72,7 +76,8 @@
       <div class="form-actions">
         <button type="submit" class="btn btn-primary" [disabled]="isLoading || analysisForm.invalid">
           <span *ngIf="isLoading" class="spinner"></span>
-          {{ isLoading ? 'Analyzing...' : '🤖 Analyze Code' }}
+          <i *ngIf="!isLoading" class="fas fa-robot"></i>
+          {{ isLoading ? 'Analyzing...' : 'Analyze Code' }}
         </button>
       </div>
     </form>
@@ -85,7 +90,7 @@
         <label for="diffLanguage">Language</label>
         <select id="diffLanguage" formControlName="language">
           <option *ngFor="let lang of languages" [value]="lang.value">
-            {{ lang.icon }} {{ lang.label }}
+            {{ lang.label }}
           </option>
         </select>
       </div>
@@ -102,7 +107,8 @@
         </div>
         <div class="code-actions">
           <button type="button" class="btn btn-secondary" (click)="loadDiffExample()">
-            📋 Load Diff Example
+            <i class="fas fa-file-import"></i>
+            Load Diff Example
           </button>
         </div>
       </div>
@@ -110,7 +116,8 @@
       <div class="form-actions">
         <button type="submit" class="btn btn-primary" [disabled]="isLoading || diffForm.invalid">
           <span *ngIf="isLoading" class="spinner"></span>
-          {{ isLoading ? 'Analyzing PR...' : '🔍 Analyze Pull Request' }}
+          <i *ngIf="!isLoading" class="fas fa-magnifying-glass"></i>
+          {{ isLoading ? 'Analyzing PR...' : 'Analyze Pull Request' }}
         </button>
       </div>
     </form>
@@ -119,29 +126,32 @@
   <!-- Tests Tab -->
   <div *ngIf="selectedTab === 'tests'" class="tab-content">
     <div class="tests-section">
-      <h3>🧪 AI Assistant Tests</h3>
+      <h3><i class="fas fa-vial"></i> AI Assistant Tests</h3>
       
       <div class="test-buttons">
         <button class="btn btn-test" (click)="testAnalysis()" [disabled]="isLoading">
           <span *ngIf="isLoading" class="spinner"></span>
-          {{ isLoading ? 'Testing...' : '🔍 Analysis Test' }}
+          <i *ngIf="!isLoading" class="fas fa-search"></i>
+          {{ isLoading ? 'Testing...' : 'Analysis Test' }}
         </button>
         
         <button class="btn btn-test" (click)="testMultiLanguage()" [disabled]="isLoading">
-          🌍 Multi-language Test
+          <i class="fas fa-globe"></i>
+          Multi-language Test
         </button>
         
         <button class="btn btn-test" (click)="testPerformance()" [disabled]="isLoading">
-          ⚡ Performance Test
+          <i class="fas fa-gauge-high"></i>
+          Performance Test
         </button>
       </div>
       <!-- Affichage du résultat multi-langage -->
       <div *ngIf="multiLangResult" class="multi-lang-result">
-        <h4>🌍 Multi-language Test Result</h4>
+        <h4><i class="fas fa-globe"></i> Multi-language Test Result</h4>
         <div class="lang-cards">
           <div *ngFor="let analysis of multiLangResult.analysis" class="lang-card">
             <div class="lang-header">
-              <span class="lang-badge">{{ getLangIcon(analysis.language) }} {{ analysis.language }}</span>
+              <span class="lang-badge"><i [class]="getLangIcon(analysis.language)"></i> {{ analysis.language }}</span>
               <span class="score-badge" [ngClass]="getScoreClass(analysis.score)">
                 {{ analysis.score }}/100
               </span>
@@ -155,14 +165,14 @@
       </div>
       <!-- Affichage du résultat performance -->
       <div *ngIf="performanceResult" class="performance-result">
-        <h4>⚡ Performance Test Result</h4>
+        <h4><i class="fas fa-gauge-high"></i> Performance Test Result</h4>
         <div class="perf-card">
           <div class="perf-header">
             <span class="perf-badge" [ngClass]="getPerfClass(performanceResult.durationMs)">
               {{ performanceResult.durationMs }} ms
             </span>
             <span class="perf-input">Input size: {{ performanceResult.inputSize }}</span>
-            <span class="perf-success" *ngIf="performanceResult.success">✔️ Success</span>
+            <span class="perf-success" *ngIf="performanceResult.success"><i class="fas fa-check-circle"></i> Success</span>
           </div>
           <div class="perf-message">{{ performanceResult.message }}</div>
           <div class="perf-result">
@@ -176,7 +186,7 @@
   <!-- Analysis Results -->
   <div *ngIf="result" class="results-section">
     <div class="results-header">
-      <h2>📊 Analysis Results</h2>
+      <h2><i class="fas fa-chart-column"></i> Analysis Results</h2>
       <div class="analysis-meta">
         <span *ngIf="result.analyzedLanguage" class="meta-item">
           <strong>Language:</strong> {{ result.analyzedLanguage }}
@@ -202,13 +212,13 @@
 
     <div *ngIf="result.suggestedGrade !== undefined || result.riskLevel || result.pullRequestDecision" class="decision-cards-grid">
       <div *ngIf="result.suggestedGrade !== undefined && result.suggestedGrade !== null" class="decision-card">
-        <div class="decision-title">🎓 Suggested Grade</div>
+        <div class="decision-title"><i class="fas fa-graduation-cap"></i> Suggested Grade</div>
         <div class="decision-value">{{ result.suggestedGrade }}/100</div>
         <div *ngIf="result.gradeRationale" class="decision-note">{{ result.gradeRationale }}</div>
       </div>
 
       <div *ngIf="result.riskLevel" class="decision-card" [ngClass]="getRiskClass(result.riskLevel)">
-        <div class="decision-title">🛡️ Risk Detection</div>
+        <div class="decision-title"><i class="fas fa-shield-alt"></i> Risk Detection</div>
         <div class="decision-value">{{ result.riskLevel }}</div>
         <div class="decision-note" *ngIf="result.riskScore !== undefined && result.riskScore !== null">
           Risk Score: {{ result.riskScore }}/100
@@ -216,20 +226,20 @@
       </div>
 
       <div *ngIf="result.pullRequestDecision" class="decision-card" [ngClass]="getPullRequestDecisionClass(result.pullRequestDecision)">
-        <div class="decision-title">✅ PR Decision</div>
+        <div class="decision-title"><i class="fas fa-check-circle"></i> PR Decision</div>
         <div class="decision-value">{{ getPullRequestDecisionLabel(result.pullRequestDecision) }}</div>
       </div>
     </div>
 
     <!-- Summary -->
     <div *ngIf="result.summary" class="summary-section">
-      <h3>📝 Summary</h3>
+      <h3><i class="fas fa-file-lines"></i> Summary</h3>
       <p>{{ result.summary }}</p>
     </div>
 
     <!-- Strengths -->
     <div *ngIf="result.strengths && result.strengths.length > 0" class="strengths-section">
-      <h3>✅ Strengths</h3>
+      <h3><i class="fas fa-circle-check"></i> Strengths</h3>
       <ul class="strengths-list">
         <li *ngFor="let strength of result.strengths">{{ strength }}</li>
       </ul>
@@ -237,12 +247,12 @@
 
     <!-- Issues -->
     <div *ngIf="result.issues && result.issues.length > 0" class="issues-section">
-      <h3>⚠️ Issues Detected ({{ result.issues.length }})</h3>
+      <h3><i class="fas fa-triangle-exclamation"></i> Issues Detected ({{ result.issues.length }})</h3>
       <div class="issues-list">
         <div *ngFor="let issue of result.issues" class="issue-card" 
              [style.border-left-color]="getSeverityColor(issue.severity)">
           <div class="issue-header">
-            <span class="issue-icon">{{ getIssueIcon(issue.type) }}</span>
+            <span class="issue-icon"><i [class]="getIssueIcon(issue.type)"></i></span>
             <span class="issue-type">{{ issue.type }}</span>
             <span class="issue-severity" [style.background-color]="getSeverityColor(issue.severity)">
               {{ issue.severity }}
@@ -259,12 +269,12 @@
 
     <!-- Suggestions -->
     <div *ngIf="result.suggestions && result.suggestions.length > 0" class="suggestions-section">
-      <h3>💡 Improvement Suggestions ({{ result.suggestions.length }})</h3>
+      <h3><i class="fas fa-lightbulb"></i> Improvement Suggestions ({{ result.suggestions.length }})</h3>
       <div class="suggestions-list">
         <div *ngFor="let suggestion of result.suggestions" class="suggestion-card"
              [style.border-left-color]="getPriorityColor(suggestion.priority)">
           <div class="suggestion-header">
-            <span class="suggestion-icon">{{ getSuggestionIcon(suggestion.category) }}</span>
+            <span class="suggestion-icon"><i [class]="getSuggestionIcon(suggestion.category)"></i></span>
             <span class="suggestion-category">{{ suggestion.category }}</span>
             <span class="suggestion-priority" [style.background-color]="getPriorityColor(suggestion.priority)">
               {{ suggestion.priority }}
@@ -277,35 +287,35 @@
 
     <!-- Specific Recommendations -->
     <div *ngIf="result.securityConcerns && result.securityConcerns.length > 0" class="security-section">
-      <h3>🔒 Security Issues</h3>
+      <h3><i class="fas fa-lock"></i> Security Issues</h3>
       <ul class="security-list">
         <li *ngFor="let concern of result.securityConcerns">{{ concern }}</li>
       </ul>
     </div>
 
     <div *ngIf="result.riskSignals && result.riskSignals.length > 0" class="security-section">
-      <h3>🚨 Risk Signals</h3>
+      <h3><i class="fas fa-bell"></i> Risk Signals</h3>
       <ul class="security-list">
         <li *ngFor="let signal of result.riskSignals">{{ signal }}</li>
       </ul>
     </div>
 
     <div *ngIf="result.prBlockingConcerns && result.prBlockingConcerns.length > 0" class="issues-section">
-      <h3>🧱 PR Blocking Concerns</h3>
+      <h3><i class="fas fa-ban"></i> PR Blocking Concerns</h3>
       <ul class="security-list">
         <li *ngFor="let concern of result.prBlockingConcerns">{{ concern }}</li>
       </ul>
     </div>
 
     <div *ngIf="result.performanceTips && result.performanceTips.length > 0" class="performance-section">
-      <h3>⚡ Performance Tips</h3>
+      <h3><i class="fas fa-gauge-high"></i> Performance Tips</h3>
       <ul class="performance-list">
         <li *ngFor="let tip of result.performanceTips">{{ tip }}</li>
       </ul>
     </div>
 
     <div *ngIf="result.bestPractices && result.bestPractices.length > 0" class="practices-section">
-      <h3>📚 Best Practices</h3>
+      <h3><i class="fas fa-book-open"></i> Best Practices</h3>
       <ul class="practices-list">
         <li *ngFor="let practice of result.bestPractices">{{ practice }}</li>
       </ul>
@@ -314,7 +324,7 @@
     <!-- Analysis Error -->
     <div *ngIf="!result.success" class="error-section">
       <div class="error-card">
-        <h3>❌ Analysis Error</h3>
+        <h3><i class="fas fa-circle-xmark"></i> Analysis Error</h3>
         <p>{{ result.message }}</p>
         <div *ngIf="result.rawResponse" class="raw-response">
           <details>
@@ -330,7 +340,7 @@
   <div *ngIf="isLoading" class="loading-overlay">
     <div class="loading-content">
       <div class="spinner-large"></div>
-      <p>🤖 AI is analyzing your code...</p>
+      <p><i class="fas fa-robot"></i> AI is analyzing your code...</p>
     </div>
   </div>
 </div> 

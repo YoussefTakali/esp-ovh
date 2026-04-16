@@ -11,6 +11,8 @@ import { RepositoryManagementComponent } from './components/repository-managemen
 import { LevelManagementComponent } from './components/level-management/level-management.component';
 import { CourseManagementComponent } from './components/course-management/course-management.component';
 import { HierarchicalViewComponent } from './components/hierarchical-view/hierarchical-view.component';
+import { SystemMonitoringComponent } from './components/system-monitoring/system-monitoring.component';
+import { DataSourceManagementComponent } from './components/data-source-management/data-source-management.component';
 
 const routes: Routes = [
   {
@@ -57,6 +59,14 @@ const routes: Routes = [
   {
     path: 'hierarchy',
     component: HierarchicalViewComponent
+  },
+  {
+    path: 'monitoring',
+    component: SystemMonitoringComponent
+  },
+  {
+    path: 'data-sources',
+    component: DataSourceManagementComponent
   }
 ];
 

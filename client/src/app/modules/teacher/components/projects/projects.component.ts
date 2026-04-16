@@ -53,7 +53,7 @@ export class TeacherProjectsComponent implements OnInit {
     this.error = null;
     this.teacherData.getMyProjects().subscribe({
       next: projects => {
-        this.projects = projects;
+        this.projects = (projects || []).map(project => this.normalizeProject(project));
         this.filterProjects();
         this.loading = false;
       },
@@ -256,5 +256,46 @@ export class TeacherProjectsComponent implements OnInit {
       return found.className + (found.courseName ? ` (${found.courseName})` : '');
     }
     return classId;
+  }
+
+  private normalizeProject(project: any): any {
+    const groups = Array.isArray(project?.groups) ? project.groups : [];
+    const tasks = Array.isArray(project?.tasks) ? project.tasks : [];
+
+    const totalGroups = project?.totalGroups
+      ?? project?.groupsCount
+      ?? project?.groupCount
+      ?? groups.length
+      ?? 0;
+
+    const totalTasks = project?.totalTasks
+      ?? project?.tasksCount
+      ?? project?.taskCount
+      ?? tasks.length
+      ?? 0;
+
+    const completedFromTasks = tasks.filter((task: any) => {
+      const status = String(task?.status || '').toUpperCase();
+      return status === 'COMPLETED' || status === 'CLOSED';
+    }).length;
+
+    const completedTasks = project?.completedTasks
+      ?? project?.doneTasks
+      ?? completedFromTasks
+      ?? 0;
+
+    const completionRate = totalTasks > 0
+      ? Math.round((completedTasks / totalTasks) * 100)
+      : (project?.completionRate ?? 0);
+
+    return {
+      ...project,
+      totalGroups,
+      totalTasks,
+      completedTasks,
+      completionRate,
+      teacherName: project?.teacherName || project?.ownerName || project?.createdByName || 'Unassigned',
+      overdue: project?.overdue ?? (project?.deadline ? new Date(project.deadline).getTime() < Date.now() : false)
+    };
   }
 }

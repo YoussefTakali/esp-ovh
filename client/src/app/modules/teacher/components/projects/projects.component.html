@@ -5,7 +5,7 @@
       <h1>My Projects</h1>
       <p>Collaborate on projects and track progress</p>
     </div>
-    <button class="refresh-btn" (click)="ngOnInit()">
+    <button class="refresh-btn" (click)="loadProjects()">
       <i class="fas fa-sync-alt"></i>
       Refresh
     </button>
@@ -16,7 +16,7 @@
   <div class="search-section">
     <div class="search-box">
       <i class="fas fa-search"></i>
-      <input type="text" placeholder="Search projects..." [(ngModel)]="searchTerm">
+      <input type="text" placeholder="Search projects..." [(ngModel)]="searchTerm" (ngModelChange)="filterProjects()">
     </div>
   </div>
 
@@ -155,9 +155,14 @@
 </div>
 
 <!-- Modal for creating a new project -->
-<div class="modal-backdrop" *ngIf="showCreateModal" (click)="closeCreateModal()"></div>
+<button
+  type="button"
+  class="modal-backdrop"
+  *ngIf="showCreateModal"
+  aria-label="Close create project modal"
+  (click)="closeCreateModal()"></button>
 <div class="modal" *ngIf="showCreateModal">
-  <div class="modal-content" (click)="$event.stopPropagation()">
+  <div class="modal-content">
     <h3 style="color:#e74c3c">Create New Project</h3>
     <form (ngSubmit)="createProject()" #projectForm="ngForm">
       <label for="projectName">Project Name</label>
@@ -175,9 +180,11 @@
       <label for="projectCollaborators">Collaborators</label>
       <input id="projectCollaborators" [(ngModel)]="collaboratorEmail" name="collaboratorEmail" placeholder="Type name or email to add..." (input)="onCollaboratorInput()" autocomplete="off" />
       <ul *ngIf="filteredCollaborators.length > 0" class="autocomplete-list">
-        <li *ngFor="let user of filteredCollaborators" (click)="selectCollaborator(user)">
-          <div><b>{{ user.firstName }} {{ user.lastName }}</b></div>
-          <div style="font-size:12px;color:#888">{{ user.email }}</div>
+        <li *ngFor="let user of filteredCollaborators">
+          <button type="button" (click)="selectCollaborator(user)">
+            <div><b>{{ user.firstName }} {{ user.lastName }}</b></div>
+            <div style="font-size:12px;color:#888">{{ user.email }}</div>
+          </button>
         </li>
       </ul>
       <div class="selected-collaborators">

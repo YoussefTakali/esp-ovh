@@ -1,0 +1,63 @@
+<div class="monitoring-page">
+  <header class="page-header">
+    <div>
+      <h1>System Monitoring</h1>
+      <p>Static infrastructure overview for server capacity and platform controls.</p>
+    </div>
+    <span class="status-pill">Static Mode</span>
+  </header>
+
+  <section class="cards-grid">
+    <article class="metric-card" *ngFor="let metric of metrics">
+      <h2>{{ metric.label }}</h2>
+      <p class="metric-value">{{ metric.used }} / {{ metric.total }} {{ metric.unit }}</p>
+      <div class="usage-bar">
+        <div class="usage-fill" [style.width.%]="getUsagePercentage(metric)"></div>
+      </div>
+      <small>{{ getUsagePercentage(metric) }}% utilized</small>
+    </article>
+  </section>
+
+  <section class="controls-panel">
+    <h2>Automation Controls</h2>
+    <div class="toggle-grid">
+      <label class="toggle-item">
+        <input type="checkbox" [(ngModel)]="aiEnabled" />
+        <span>Enable AI services</span>
+      </label>
+
+      <label class="toggle-item">
+        <input type="checkbox" [(ngModel)]="autoDeploymentEnabled" />
+        <span>Enable auto deployment</span>
+      </label>
+
+      <label class="toggle-item">
+        <input type="checkbox" [(ngModel)]="githubSyncEnabled" />
+        <span>Enable GitHub syncing</span>
+      </label>
+    </div>
+  </section>
+
+  <section class="datasource-panel">
+    <h2>Data Load Source Selector</h2>
+    <p>Pick the target profile and mark the database sources to load from.</p>
+
+    <label class="field-label" for="loadProfile">Load profile name</label>
+    <input id="loadProfile" type="text" [(ngModel)]="loadProfile" placeholder="e.g. semester-sync-01" />
+
+    <div class="db-checklist">
+      <label class="db-item" *ngFor="let option of dbOptions">
+        <input type="checkbox" [(ngModel)]="option.checked" />
+        <div>
+          <strong>{{ option.label }}</strong>
+          <small>{{ option.engine }}</small>
+        </div>
+      </label>
+    </div>
+
+    <div class="selection-preview">
+      <span class="preview-label">Selected sources:</span>
+      <span>{{ selectedSources() }}</span>
+    </div>
+  </section>
+</div>

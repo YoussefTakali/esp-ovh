@@ -20,26 +20,26 @@ export class AiCodeReviewComponent implements OnInit {
   performanceResult: any = null;
 
   languages = [
-    { value: 'java', label: 'Java', icon: '☕' },
-    { value: 'javascript', label: 'JavaScript', icon: '🟨' },
-    { value: 'typescript', label: 'TypeScript', icon: '🔷' },
-    { value: 'python', label: 'Python', icon: '🐍' },
-    { value: 'cpp', label: 'C++', icon: '⚡' },
-    { value: 'c', label: 'C', icon: '🔵' },
-    { value: 'csharp', label: 'C#', icon: '💜' },
-    { value: 'php', label: 'PHP', icon: '🐘' },
-    { value: 'ruby', label: 'Ruby', icon: '💎' },
-    { value: 'go', label: 'Go', icon: '🐹' },
-    { value: 'rust', label: 'Rust', icon: '🦀' },
-    { value: 'swift', label: 'Swift', icon: '🍎' },
-    { value: 'kotlin', label: 'Kotlin', icon: '🟦' },
-    { value: 'scala', label: 'Scala', icon: '🔴' },
-    { value: 'html', label: 'HTML', icon: '🌐' },
-    { value: 'css', label: 'CSS', icon: '🎨' },
-    { value: 'sql', label: 'SQL', icon: '🗄️' },
-    { value: 'json', label: 'JSON', icon: '📄' },
-    { value: 'yaml', label: 'YAML', icon: '📋' },
-    { value: 'markdown', label: 'Markdown', icon: '📝' }
+    { value: 'java', label: 'Java' },
+    { value: 'javascript', label: 'JavaScript' },
+    { value: 'typescript', label: 'TypeScript' },
+    { value: 'python', label: 'Python' },
+    { value: 'cpp', label: 'C++' },
+    { value: 'c', label: 'C' },
+    { value: 'csharp', label: 'C#' },
+    { value: 'php', label: 'PHP' },
+    { value: 'ruby', label: 'Ruby' },
+    { value: 'go', label: 'Go' },
+    { value: 'rust', label: 'Rust' },
+    { value: 'swift', label: 'Swift' },
+    { value: 'kotlin', label: 'Kotlin' },
+    { value: 'scala', label: 'Scala' },
+    { value: 'html', label: 'HTML' },
+    { value: 'css', label: 'CSS' },
+    { value: 'sql', label: 'SQL' },
+    { value: 'json', label: 'JSON' },
+    { value: 'yaml', label: 'YAML' },
+    { value: 'markdown', label: 'Markdown' }
   ];
 
   codeExamples = {
@@ -409,8 +409,18 @@ index 1a2b3c4..5d6e7f8 100644
   }
 
   getLangIcon(lang: string): string {
-    const icons: any = { Java: '☕', Python: '🐍', 'C++': '⚡', JavaScript: '🟨' };
-    return icons[lang] || '💻';
+    const icons: Record<string, string> = {
+      Java: 'fab fa-java',
+      Python: 'fab fa-python',
+      'C++': 'fas fa-microchip',
+      JavaScript: 'fab fa-js-square',
+      TypeScript: 'fas fa-code',
+      PHP: 'fab fa-php',
+      HTML: 'fab fa-html5',
+      CSS: 'fab fa-css3-alt'
+    };
+
+    return icons[lang] || 'fas fa-code';
   }
   getScoreClass(score: number): string {
     if (score >= 90) return 'score-good';

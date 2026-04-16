@@ -682,9 +682,11 @@
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-  padding: 2rem 2.5rem 2rem 2.5rem;
-  width: 800px;
+  padding: 1.25rem 1.5rem;
+  width: min(620px, 92vw);
   min-height: 120px;
+  max-height: 78vh;
+  overflow-y: auto;
   position: relative;
   display: flex;
   flex-direction: column;

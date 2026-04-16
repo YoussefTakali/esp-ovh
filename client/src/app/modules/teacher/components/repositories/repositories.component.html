@@ -5,13 +5,22 @@
       <h1>My Repositories</h1>
       <p>Access and manage your project repositories</p>
     </div>
-    <button class="refresh-btn" (click)="loadRepositories()" [disabled]="loading">
-      <i class="fas fa-sync-alt" [class.spinning]="loading"></i>
-      Refresh
-    </button>
-    <button class="add-repo-btn" (click)="addRepository()">
-      <i class="fas fa-plus"></i> New Repository
-    </button>
+    <div class="header-actions">
+      <button class="refresh-btn" (click)="loadRepositories()" [disabled]="loading">
+        <i class="fas fa-sync-alt" [class.spinning]="loading"></i>
+        Refresh
+      </button>
+      <button class="add-repo-btn" (click)="addRepository()">
+        <i class="fas fa-plus"></i> New Repository
+      </button>
+    </div>
+  </div>
+
+  <div class="search-section">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Search repositories..." [(ngModel)]="searchTerm" />
+    </div>
   </div>
 
   <!-- Loading State -->

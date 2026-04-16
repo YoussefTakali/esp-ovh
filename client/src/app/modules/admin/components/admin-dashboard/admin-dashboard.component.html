@@ -72,23 +72,45 @@
       </div>
     </div>
 
-    <!-- User Distribution Chart -->
+    <!-- Operations Snapshot -->
     <div class="dashboard-row">
-      <div class="chart-container">
-        <h2>User Distribution by Role</h2>
-        <div class="role-distribution">
-          <div *ngFor="let roleEntry of stats.usersByRole | keyvalue" class="role-item">
-            <div class="role-info">
-              <span class="role-name">{{ getUserRoleDisplayName(roleEntry.key) }}</span>
-              <span class="role-count">{{ roleEntry.value }}</span>
+      <div class="chart-container operations-panel">
+        <h2>Platform Operations Snapshot</h2>
+        <div class="operations-grid">
+          <div class="operation-card">
+            <p class="operation-label">Active Accounts</p>
+            <p class="operation-value">{{ activeUsers }}</p>
+            <div class="operation-meter">
+              <div class="operation-fill operation-fill-success" [style.width.%]="stats.totalUsers > 0 ? (activeUsers / stats.totalUsers) * 100 : 0"></div>
             </div>
-            <div class="role-bar">
-              <div 
-                class="role-fill" 
-                [style.width.%]="stats.totalUsers > 0 ? (roleEntry.value / stats.totalUsers) * 100 : 0"
-                [attr.data-role]="roleEntry.key">
-              </div>
+            <small>{{ stats.totalUsers > 0 ? ((activeUsers / stats.totalUsers) * 100 | number:'1.0-0') : 0 }}% of total users</small>
+          </div>
+
+          <div class="operation-card">
+            <p class="operation-label">Inactive Accounts</p>
+            <p class="operation-value">{{ inactiveUsers }}</p>
+            <div class="operation-meter">
+              <div class="operation-fill operation-fill-danger" [style.width.%]="stats.totalUsers > 0 ? (inactiveUsers / stats.totalUsers) * 100 : 0"></div>
             </div>
+            <small>Accounts that may require follow-up</small>
+          </div>
+
+          <div class="operation-card">
+            <p class="operation-label">Teaching Capacity</p>
+            <p class="operation-value">{{ stats.usersByRole.TEACHER || 0 }} Teachers</p>
+            <div class="operation-meter">
+              <div class="operation-fill operation-fill-info" [style.width.%]="getRoleShare('TEACHER')"></div>
+            </div>
+            <small>{{ getRoleShare('TEACHER') }}% of total users</small>
+          </div>
+
+          <div class="operation-card">
+            <p class="operation-label">Student Population</p>
+            <p class="operation-value">{{ stats.usersByRole.STUDENT || 0 }} Students</p>
+            <div class="operation-meter">
+              <div class="operation-fill operation-fill-warning" [style.width.%]="getRoleShare('STUDENT')"></div>
+            </div>
+            <small>{{ getRoleShare('STUDENT') }}% of total users</small>
           </div>
         </div>
       </div>

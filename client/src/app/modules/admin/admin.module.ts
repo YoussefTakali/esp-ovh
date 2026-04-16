@@ -25,6 +25,8 @@ import { CourseCreateDialogComponent } from './components/course-management/cour
 import { AssignStudentsDialogComponent } from './components/class-management/assign-students-dialog.component';
 import { HierarchicalViewComponent } from './components/hierarchical-view/hierarchical-view.component';
 import { ShowAllStudentsDialogComponent } from './components/class-management/show-all-students-dialog.component';
+import { SystemMonitoringComponent } from './components/system-monitoring/system-monitoring.component';
+import { DataSourceManagementComponent } from './components/data-source-management/data-source-management.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { ShowAllStudentsDialogComponent } from './components/class-management/sh
     CourseCreateDialogComponent,
     AssignStudentsDialogComponent,
     HierarchicalViewComponent,
-    ShowAllStudentsDialogComponent
+    ShowAllStudentsDialogComponent,
+    SystemMonitoringComponent,
+    DataSourceManagementComponent
   ],
   imports: [
     CommonModule,

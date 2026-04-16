@@ -587,7 +587,16 @@ export class TeacherTasksComponent implements OnInit {
         this.snackbar.showSuccess('Task(s) created successfully!');
         this.closeAddTaskModal();
       },
-      error: () => this.snackbar.showError('Failed to create task(s).')
+      error: (error) => {
+        if (error?.status >= 200 && error?.status < 300) {
+          this.reloadTasks();
+          this.snackbar.showSuccess('Task(s) created successfully!');
+          this.closeAddTaskModal();
+          return;
+        }
+
+        this.snackbar.showError(error?.error?.message || 'Failed to create task(s).');
+      }
     });
   }
 
