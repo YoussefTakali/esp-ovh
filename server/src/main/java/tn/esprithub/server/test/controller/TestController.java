@@ -8,7 +8,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/test")
-@CrossOrigin(origins = "http://localhost:8090")
+@CrossOrigin(origins = "${app.cors.allowed-origins}", allowCredentials = "true")
 public class TestController {
 
     @PostMapping("/simple")

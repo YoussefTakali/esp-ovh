@@ -1,8 +1,8 @@
 
 import { Component, OnInit } from '@angular/core';
 import { StudentService, Repository } from '../../services/student.service';
-import { forkJoin, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
  
@@ -36,16 +36,16 @@ export class StudentRepositoriesComponent implements OnInit {
 
   constructor(
     private readonly studentService: StudentService,
-    private http: HttpClient
+    private readonly http: HttpClient
   ) {}
   exportRepositoriesCsv(): void {
-    this.http.get(environment.apiUrl + '/v1/repositories/export', { responseType: 'blob' }).subscribe(blob => {
-      const url = window.URL.createObjectURL(blob);
+    this.http.get(environment.apiUrl + '/api/v1/repositories/export', { responseType: 'blob' }).subscribe(blob => {
+      const url = globalThis.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = 'repositories.csv';
       a.click();
-      window.URL.revokeObjectURL(url);
+      globalThis.URL.revokeObjectURL(url);
     });
   }
  

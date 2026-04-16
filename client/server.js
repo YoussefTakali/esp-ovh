@@ -2,10 +2,34 @@ const express = require('express');
 const path = require('node:path');
 
 const app = express();
+app.set('trust proxy', true);
+
+const normalizeApiUrl = (url) => {
+  if (!url) {
+    return '';
+  }
+
+  return url.endsWith('/') ? url.slice(0, -1) : url;
+};
+
+const resolveDefaultApiUrl = (req) => {
+  const forwardedProto = req.headers['x-forwarded-proto'];
+  const protocol = typeof forwardedProto === 'string'
+    ? forwardedProto.split(',')[0].trim()
+    : req.protocol;
+  const host = req.get('host');
+
+  if (!host) {
+    return 'http://localhost:8090';
+  }
+
+  return `${protocol}://${host}`;
+};
+
 const distPath = path.join(__dirname, 'dist/client');
 
-app.get('/env-config.js', (_req, res) => {
-  const apiUrl = process.env.API_URL || 'https://web-production-7e19b.up.railway.app';
+app.get('/env-config.js', (req, res) => {
+  const apiUrl = normalizeApiUrl(process.env.API_URL || resolveDefaultApiUrl(req));
   const config = { apiUrl };
 
   res.setHeader('Content-Type', 'application/javascript');

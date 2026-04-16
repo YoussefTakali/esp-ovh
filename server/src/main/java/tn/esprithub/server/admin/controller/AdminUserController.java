@@ -37,7 +37,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/admin/users")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = {"localhost:8090", "http://127.0.0.1:4200"}, allowCredentials = "true")
+@CrossOrigin(origins = "${app.cors.allowed-origins}", allowCredentials = "true")
 public class AdminUserController {
     
     private final UserRepository userRepository;
