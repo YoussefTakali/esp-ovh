@@ -1,0 +1,63 @@
+<div class="submissions-container">
+  <div class="header">
+    <h1>My Submissions</h1>
+    <button class="btn-primary" (click)="goToTaskSubmission()">Submit New Task</button>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading submissions...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && !error">
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>{{ totalElements }}</h3>
+        <p>Total Submissions</p>
+      </div>
+      <div class="stat-card">
+        <h3>{{ getGradedCount() }}</h3>
+        <p>Graded</p>
+      </div>
+      <div class="stat-card">
+        <h3>{{ getPendingReviewCount() }}</h3>
+        <p>Pending Review</p>
+      </div>
+      <div class="stat-card">
+        <h3>{{ getLateSubmissionsCount() }}</h3>
+        <p>Late Submissions</p>
+      </div>
+    </div>
+
+    <!-- Submissions List -->
+    <div class="submissions-list">
+      <div *ngFor="let submission of submissions" class="submission-card" (click)="viewSubmission(submission.id)">
+        <div class="submission-header">
+          <h3>{{ submission.taskTitle }}</h3>
+          <div class="status-badge" [ngClass]="getStatusClass(submission.status)">
+            {{ submission.status }}
+          </div>
+        </div>
+        
+        <div class="submission-details">
+          <p><strong>Submitted:</strong> {{ submission.submittedAt | date:'short' }}</p>
+          <p><strong>Commit:</strong> {{ submission.commitHash.substring(0, 8) }}</p>
+          <div *ngIf="submission.isGraded" class="grade-info">
+            <p><strong>Grade:</strong> {{ submission.grade }}/{{ submission.maxGrade }} ({{ submission.gradePercentage }}%)</p>
+          </div>
+          <div *ngIf="submission.isLate" class="late-badge">LATE</div>
+        </div>
+      </div>
+
+      <div *ngIf="submissions.length === 0" class="no-submissions">
+        <p>No submissions found. <a (click)="goToTaskSubmission()">Submit your first task</a></p>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="totalPages > 1" class="pagination">
+      <button (click)="previousPage()" [disabled]="currentPage === 0">Previous</button>
+      <span>Page {{ currentPage + 1 }} of {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">Next</button>
+    </div>
+  </div>
+</div>

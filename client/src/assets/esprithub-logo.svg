@@ -1,0 +1,21 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">esprithub logo</title>
+  <desc id="desc">Stylized mortarboard icon with espritHub text</desc>
+  <defs>
+    <linearGradient id="capEdge" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0b0b" />
+      <stop offset="100%" stop-color="#2d2d2d" />
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" fill="transparent"/>
+  <g transform="translate(30 40)">
+    <polygon points="98,0 196,44 98,88 0,44" fill="url(#capEdge)" stroke="#1b1b1b" stroke-width="3" stroke-linejoin="round"/>
+    <polygon points="98,88 150,64 150,112 98,136 46,112 46,64" fill="#0f0f0f" stroke="#262626" stroke-width="3" stroke-linejoin="round"/>
+    <line x1="98" y1="88" x2="98" y2="148" stroke="#b5161b" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="98" cy="156" r="10" fill="#b5161b" />
+  </g>
+  <g font-family="'Poppins', 'Segoe UI', sans-serif" font-size="48" font-weight="600" text-anchor="middle">
+    <text x="90" y="228" fill="#b5161b">esprit</text>
+    <text x="180" y="228" fill="#828282">Hub</text>
+  </g>
+</svg>

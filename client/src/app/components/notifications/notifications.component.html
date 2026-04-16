@@ -1,0 +1,59 @@
+<div class="notifications-page">
+  <div class="notifications-header">
+    <div>
+      <h2>Notifications</h2>
+      <p>You have {{ getUnreadCount() }} unread notification(s).</p>
+    </div>
+    <div class="notifications-actions">
+      <button class="ghost-btn" (click)="toggleUnreadOnly()">
+        {{ unreadOnly ? 'Show All' : 'Show Unread' }}
+      </button>
+      <button class="primary-btn" (click)="markAllAsSeen()" [disabled]="getUnreadCount() === 0">
+        Mark all as seen
+      </button>
+      <button class="danger-btn" (click)="deleteAllNotifications()" [disabled]="notifications.length === 0">
+        Delete all
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="notifications-loading">Loading notifications...</div>
+
+  <div *ngIf="!loading && notifications.length === 0" class="notifications-empty">
+    No notifications found.
+  </div>
+
+  <ul *ngIf="!loading && notifications.length > 0" class="notifications-list">
+    <li
+      *ngFor="let notification of notifications; trackBy: trackByNotificationId"
+      class="notification-item"
+      [class.unread]="!notification.read"
+    >
+      <div class="notification-meta">
+        <span class="notification-type">{{ notification.type }}</span>
+        <span class="notification-time">{{ notification.timestamp | date: 'medium' }}</span>
+      </div>
+      <h3>{{ notification.title }}</h3>
+      <p>{{ notification.message }}</p>
+      <div class="notification-controls">
+        <button
+          class="ghost-btn mini"
+          (click)="markAsSeen(notification, $event)"
+          [disabled]="notification.read">
+          {{ notification.read ? 'Seen' : 'Mark as seen' }}
+        </button>
+        <button
+          *ngIf="canOpenNotification(notification)"
+          class="primary-btn mini"
+          (click)="openNotification(notification); $event.stopPropagation()">
+          Open
+        </button>
+        <button
+          class="danger-btn mini"
+          (click)="deleteNotification(notification, $event)">
+          Delete
+        </button>
+      </div>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,84 @@
+<div class="teacher-repositories">
+  <!-- Header -->
+  <div class="repositories-header">
+    <div class="header-content">
+      <h1>My Repositories</h1>
+      <p>Access and manage your project repositories</p>
+    </div>
+    <button class="refresh-btn" (click)="loadRepositories()" [disabled]="loading">
+      <i class="fas fa-sync-alt" [class.spinning]="loading"></i>
+      Refresh
+    </button>
+    <button class="add-repo-btn" (click)="addRepository()">
+      <i class="fas fa-plus"></i> New Repository
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Loading your repositories...</p>
+    </div>
+  </div>
+
+  
+
+  <!-- Content -->
+  <div *ngIf="!loading" class="repositories-content">
+    <!-- Empty State -->
+    <div *ngIf="filteredRepositories.length === 0" class="empty-state">
+      <i class="fab fa-github"></i>
+      <h3>No repositories found</h3>
+      <p>You don't have access to any repositories yet.</p>
+    </div>
+
+    <!-- Repositories Grid -->
+    <div *ngIf="filteredRepositories.length > 0" class="repositories-grid">
+      <div *ngFor="let repo of filteredRepositories" class="repository-card">
+        <div class="repository-header">
+          <div class="repo-name">
+            <i class="fab fa-github"></i>
+            <h3>{{ repo.name }}</h3>
+          </div>
+          <div class="repo-privacy">
+            <i [class]="repo.isPrivate ? 'fas fa-lock' : 'fas fa-globe'"></i>
+            <span>{{ repo.isPrivate ? 'Private' : 'Public' }}</span>
+          </div>
+        </div>
+
+        <div class="repository-content">
+          <p class="repo-description">{{ repo.description || 'No description available' }}</p>
+          <div class="repo-meta">
+            <div class="meta-item">
+              <i class="fas fa-code-branch"></i>
+              <span>{{ repo.defaultBranch }}</span>
+            </div>
+            <div class="meta-item" *ngIf="repo.language">
+              <i class="fas fa-code"></i>
+              <span>{{ repo.language }}</span>
+            </div>
+            <div class="meta-item">
+              <i class="fas fa-database"></i>
+              <span>{{ (repo.size || 0) | number }} KB</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="repository-footer">
+          <div class="repo-actions">
+            <button class="action-btn details-btn" (click)="navigateToRepository(repo)">
+              <i class="fas fa-info-circle"></i>
+              Details
+            </button>
+            <a [href]="repo.url" target="_blank" class="action-btn view-btn">
+              <i class="fab fa-github"></i>
+              View on GitHub
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

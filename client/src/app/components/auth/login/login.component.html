@@ -1,0 +1,147 @@
+<div class="login-container">
+  <div class="login-shell">
+    <div class="brand-panel">
+      <div>
+        <span class="badge">EspritHub</span>
+        <h1>Collaborate. Ship. Learn.</h1>
+        <p>Unified workspace for classes, projects, and GitHub automation.</p>
+      </div>
+      <ul class="benefits">
+        <li><i class="fas fa-bolt"></i> GitHub webhooks & realtime metrics</li>
+        <li><i class="fas fa-users"></i> Guided student & teacher dashboards</li>
+        <li><i class="fas fa-lock"></i> Secure institutional access</li>
+      </ul>
+      <div class="stats">
+        <div>
+          <strong>120+</strong>
+          <span>Active projects</span>
+        </div>
+        <div>
+          <strong>480</strong>
+          <span>Students onboarded</span>
+        </div>
+        <div>
+          <strong>24/7</strong>
+          <span>Code review insights</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-panel">
+      <div class="form-header">
+        <div>
+          <p class="welcome">Welcome back</p>
+          <h2>Sign in to EspritHub</h2>
+          <span class="subtext">Continue with your account</span>
+        </div>
+        <div class="shield-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <div class="error-message" *ngIf="errorMessage">
+          <i class="fas fa-exclamation-circle"></i>
+          {{ errorMessage }}
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">
+            <i class="fas fa-envelope"></i>
+            Email address
+          </label>
+          <div class="input-wrapper">
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="form-input"
+              [class.error]="email?.invalid && email?.touched"
+              placeholder="your.name@example.com"
+              autocomplete="username"
+            />
+            <div class="input-icon">
+              <i class="fas fa-at"></i>
+            </div>
+          </div>
+          <div class="form-error" *ngIf="email?.invalid && email?.touched">
+            <span *ngIf="email?.errors?.['required']">Email is required</span>
+            <span *ngIf="email?.errors?.['email']">Please enter a valid email</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">
+            <i class="fas fa-lock"></i>
+            Password
+          </label>
+          <div class="input-wrapper">
+            <input
+              *ngIf="!showPassword"
+              id="password"
+              type="password"
+              formControlName="password"
+              class="form-input"
+              [class.error]="password?.invalid && password?.touched"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+            />
+            <input
+              *ngIf="showPassword"
+              id="password-visible"
+              type="text"
+              formControlName="password"
+              class="form-input"
+              [class.error]="password?.invalid && password?.touched"
+              placeholder="Enter your password"
+              autocomplete="off"
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility()"
+              tabindex="-1"
+            >
+              <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
+          </div>
+          <div class="form-error" *ngIf="password?.invalid && password?.touched">
+            <span *ngIf="password?.errors?.['required']">Password is required</span>
+            <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</span>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="login-btn"
+          [disabled]="isLoading || loginForm.invalid"
+          [class.loading]="isLoading"
+        >
+          <span *ngIf="!isLoading">
+            <i class="fas fa-sign-in-alt"></i>
+            Sign In
+          </span>
+          <span *ngIf="isLoading" class="loading-content">
+            <i class="fas fa-spinner fa-spin"></i>
+            Signing In...
+          </span>
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <p class="help-text">
+          <i class="fas fa-info-circle"></i>
+          Use your institutional credentials to continue
+        </p>
+        <div class="github-notice">
+          <i class="fab fa-github"></i>
+          <div>
+            <strong>GitHub verification required</strong>
+            <span>We'll redirect you to GitHub if your token is missing.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,33 @@
+<div class="action-dialog" [class.danger]="data.variant === 'danger'">
+  <div class="dialog-header">
+    <h2>{{ data.title }}</h2>
+  </div>
+
+  <div class="dialog-body">
+    <p *ngIf="data.message" class="message">{{ data.message }}</p>
+
+    <label *ngIf="isInputMode()" class="input-label">
+      <span>{{ data.inputLabel || 'Value' }}</span>
+      <input
+        type="text"
+        [(ngModel)]="value"
+        [placeholder]="data.inputPlaceholder || ''"
+        [attr.autofocus]="true"
+      />
+    </label>
+  </div>
+
+  <div class="dialog-actions">
+    <button type="button" class="btn-cancel" (click)="onCancel()">
+      {{ data.cancelText || 'Cancel' }}
+    </button>
+    <button
+      type="button"
+      class="btn-confirm"
+      [class.danger]="data.variant === 'danger'"
+      [disabled]="isInputMode() && !!data.inputRequired && !value.trim()"
+      (click)="onConfirm()">
+      {{ data.confirmText || 'Confirm' }}
+    </button>
+  </div>
+</div>

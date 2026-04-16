@@ -1,0 +1,285 @@
+<div class="student-tasks">
+  <!-- Header -->
+  <div class="tasks-header">
+    <div class="header-content">
+      <h1>My Tasks</h1>
+      <p>Manage your assignments and track your progress</p>
+    </div>
+    <button class="refresh-btn" (click)="refresh()" [disabled]="loading">
+      <i class="fas fa-sync-alt" [class.spinning]="loading"></i>
+      Refresh
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="filter-row">
+      <!-- Search -->
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" 
+               placeholder="Search tasks..." 
+               [(ngModel)]="searchTerm" 
+               (input)="onFilterChange()">
+      </div>
+
+      <!-- Filter buttons -->
+      <div class="filter-buttons">
+        <button class="filter-btn" 
+                [class.active]="selectedFilter === 'all'"
+                (click)="selectedFilter = 'all'; onFilterChange()">
+          All Tasks
+        </button>
+        <button class="filter-btn" 
+                [class.active]="selectedFilter === 'active'"
+                (click)="selectedFilter = 'active'; onFilterChange()">
+          Active
+        </button>
+        <button class="filter-btn" 
+                [class.active]="selectedFilter === 'completed'"
+                (click)="selectedFilter = 'completed'; onFilterChange()">
+          Completed
+        </button>
+        <button class="filter-btn" 
+                [class.active]="selectedFilter === 'overdue'"
+                (click)="selectedFilter = 'overdue'; onFilterChange()">
+          Overdue
+        </button>
+      </div>
+
+      <!-- Dropdowns -->
+      <div class="filter-dropdowns">
+        <select [(ngModel)]="selectedType" (change)="onFilterChange()" class="filter-select">
+          <option value="all">All Types</option>
+          <option value="INDIVIDUAL">Individual</option>
+          <option value="GROUP">Group</option>
+          <option value="CLASS">Class</option>
+        </select>
+
+        <select [(ngModel)]="selectedStatus" (change)="onFilterChange()" class="filter-select">
+          <option value="all">All Status</option>
+          <option value="PENDING">Pending</option>
+          <option value="IN_PROGRESS">In Progress</option>
+          <option value="COMPLETED">Completed</option>
+          <option value="DRAFT">Draft</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Loading your tasks...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-container">
+    <div class="error-message">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>{{ error }}</p>
+      <button class="retry-btn" (click)="loadTasks()">Try Again</button>
+    </div>
+  </div>
+
+  <!-- Tasks List -->
+  <div *ngIf="!loading && !error" class="tasks-content">
+    
+    <!-- Empty State -->
+    <div *ngIf="filteredTasks.length === 0" class="empty-state">
+      <i class="fas fa-tasks"></i>
+      <h3>No tasks found</h3>
+      <p>No tasks match your current filters.</p>
+    </div>
+
+    <!-- Tasks Grid -->
+    <div *ngIf="filteredTasks.length > 0" class="tasks-grid">
+      <div *ngFor="let task of filteredTasks" class="task-card" [class.overdue]="isOverdue(task.dueDate, task.status)">
+        
+        <!-- Task Header -->
+        <div class="task-header">
+          <div class="task-priority" [style.background-color]="getPriorityColor(getTaskPriority(task))"></div>
+          <div class="task-type">
+            <i [class]="getTypeIcon(task.type)"></i>
+            <span>{{ task.type }}</span>
+          </div>
+          <div class="task-status">
+            <span class="status-badge" [style.background-color]="getStatusColor(task.status)">
+              {{ task.status.replace('_', ' ') }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Task Content -->
+        <div class="task-content">
+          <h3>{{ task.title }}</h3>
+          <p class="task-description">{{ task.description }}</p>
+          
+          <!-- Task Meta -->
+          <div class="task-meta">
+            <div *ngIf="task.projectName" class="meta-item">
+              <i class="fas fa-folder-open"></i>
+              <span>{{ task.projectName }}</span>
+            </div>
+            <div *ngIf="task.groupName" class="meta-item">
+              <i class="fas fa-users"></i>
+              <span>{{ task.groupName }}</span>
+            </div>
+            <div *ngIf="task.className" class="meta-item">
+              <i class="fas fa-graduation-cap"></i>
+              <span>{{ task.className }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task Footer -->
+        <div class="task-footer">
+          <div class="due-date">
+            <i class="fas fa-calendar"></i>
+            <span>Due: {{ formatDate(task.dueDate) }}</span>
+            <small class="days-left" 
+                   [class.urgent]="getDaysUntilDue(task.dueDate) <= 2"
+                   [class.overdue]="getDaysUntilDue(task.dueDate) < 0">
+              <ng-container *ngIf="getDaysUntilDue(task.dueDate) >= 0">
+                {{ getDaysUntilDue(task.dueDate) }} days left
+              </ng-container>
+              <ng-container *ngIf="getDaysUntilDue(task.dueDate) < 0">
+                {{ getAbsoluteDays(getDaysUntilDue(task.dueDate)) }} days overdue
+              </ng-container>
+            </small>
+          </div>
+
+          <div class="task-actions">
+            <ng-container *ngIf="task.status !== 'COMPLETED'">
+              <button *ngIf="task.status === 'PENDING'" 
+                      class="action-btn start-btn"
+                      (click)="updateTaskStatus(task.id, 'IN_PROGRESS')">
+                <i class="fas fa-play"></i>
+                Start
+              </button>
+              <button *ngIf="task.status === 'IN_PROGRESS'" 
+                      class="action-btn complete-btn"
+                      (click)="updateTaskStatus(task.id, 'COMPLETED')">
+                <i class="fas fa-check"></i>
+                Complete
+              </button>
+            </ng-container>
+            
+            <!-- Submit button for tasks that can be submitted -->
+            <button *ngIf="canSubmitTask(task)" 
+                    class="action-btn submit-btn"
+                    (click)="openSubmissionDialog(task)">
+              <i class="fas fa-upload"></i>
+              Submit
+            </button>
+            
+            <button class="action-btn view-btn" 
+                  [disabled]="loadingTaskDetails"
+                    (click)="viewTaskDetails(task.id)">
+              <i class="fas fa-eye"></i>
+              View
+            </button>
+          </div>
+        </div>
+
+        <!-- Graded indicator -->
+        <div *ngIf="task.isGraded" class="graded-indicator">
+          <i class="fas fa-award"></i>
+          <span>Graded</span>
+        </div>
+
+        <!-- Overdue overlay -->
+        <div *ngIf="isOverdue(task.dueDate, task.status)" class="overdue-overlay">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>OVERDUE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task Summary -->
+    <div *ngIf="filteredTasks.length > 0" class="tasks-summary">
+      <div class="summary-stats">
+        <div class="stat-item">
+          <span class="stat-number">{{ filteredTasks.length }}</span>
+          <span class="stat-label">Total Tasks</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">{{ getCompletedTasksCount() }}</span>
+          <span class="stat-label">Completed</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">{{ getOverdueTasksCount() }}</span>
+          <span class="stat-label">Overdue</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    *ngIf="selectedTaskDetails"
+    class="task-details-modal-overlay"
+    (click)="closeTaskDetails()"
+    (keydown.escape)="closeTaskDetails()">
+    <div class="task-details-modal" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+      <div class="task-details-header">
+        <div>
+          <h2>{{ selectedTaskDetails.title }}</h2>
+          <p>Task details</p>
+        </div>
+        <button type="button" class="close-modal-btn" (click)="closeTaskDetails()" aria-label="Close task details">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="task-details-content">
+        <div class="task-details-badges">
+          <span class="detail-badge" [style.background-color]="getStatusColor(selectedTaskDetails.status)">
+            {{ selectedTaskDetails.status.replace('_', ' ') }}
+          </span>
+          <span class="detail-badge secondary">{{ selectedTaskDetails.type }}</span>
+        </div>
+
+        <div class="detail-block">
+          <h3>Description</h3>
+          <p>{{ selectedTaskDetails.description }}</p>
+        </div>
+
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="label">Due Date</span>
+            <span class="value">{{ formatDate(selectedTaskDetails.dueDate) }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Timing</span>
+            <span class="value" [class.overdue]="getDaysUntilDue(selectedTaskDetails.dueDate) < 0">
+              <ng-container *ngIf="getDaysUntilDue(selectedTaskDetails.dueDate) >= 0">
+                {{ getDaysUntilDue(selectedTaskDetails.dueDate) }} day(s) left
+              </ng-container>
+              <ng-container *ngIf="getDaysUntilDue(selectedTaskDetails.dueDate) < 0">
+                {{ getAbsoluteDays(getDaysUntilDue(selectedTaskDetails.dueDate)) }} day(s) overdue
+              </ng-container>
+            </span>
+          </div>
+          <div class="detail-item" *ngIf="selectedTaskDetails.projectName">
+            <span class="label">Project</span>
+            <span class="value">{{ selectedTaskDetails.projectName }}</span>
+          </div>
+          <div class="detail-item" *ngIf="selectedTaskDetails.groupName">
+            <span class="label">Group</span>
+            <span class="value">{{ selectedTaskDetails.groupName }}</span>
+          </div>
+          <div class="detail-item" *ngIf="selectedTaskDetails.className">
+            <span class="label">Class</span>
+            <span class="value">{{ selectedTaskDetails.className }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-details-actions">
+        <button type="button" class="action-btn view-btn" (click)="closeTaskDetails()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,225 @@
+<div class="calendar-shell">
+  <section class="calendar-hero">
+    <div class="hero-text">
+      <p class="hero-kicker">Unified Workspace Calendar</p>
+      <h1>Plan meetings, track deadlines, and check free/busy instantly</h1>
+      <p class="hero-subtitle">
+        One shared calendar for admin, chief, teacher, and student workflows.
+      </p>
+    </div>
+    <button class="hero-action" type="button" (click)="openCreatePanel()">
+      <i class="fas fa-plus"></i>
+      New Event
+    </button>
+  </section>
+
+  <section class="calendar-card">
+    <div class="calendar-toolbar">
+      <div class="calendar-nav">
+        <button type="button" class="icon-btn" (click)="previousMonth()" aria-label="Previous month">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <h2>{{ monthLabel() }}</h2>
+        <button type="button" class="icon-btn" (click)="nextMonth()" aria-label="Next month">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <div class="toolbar-actions">
+        <button type="button" class="ghost-btn" (click)="goToToday()">Today</button>
+        <button type="button" class="ghost-btn" (click)="refreshCalendar()">
+          <i class="fas fa-rotate"></i>
+          Refresh
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="eventsError" class="calendar-error">{{ eventsError }}</div>
+
+    <div class="calendar-grid-wrap" [class.loading]="loadingEvents">
+      <div class="weekdays-row">
+        <div class="weekday" *ngFor="let day of weekDays">{{ day }}</div>
+      </div>
+
+      <div class="days-grid">
+        <button
+          *ngFor="let day of calendarDays"
+          type="button"
+          class="day-cell"
+          [class.current-month]="day.isCurrentMonth"
+          [class.outside-month]="!day.isCurrentMonth"
+          [class.today]="day.isToday"
+          [class.selected]="selectedDate.toDateString() === day.date.toDateString()"
+          (click)="selectDate(day)">
+          <div class="day-number">{{ dayNumber(day) }}</div>
+          <div class="day-events">
+            <span
+              *ngFor="let event of eventsForDay(day.date) | slice:0:3"
+              class="event-chip"
+              [ngClass]="eventBadgeClass(event)">
+              {{ event.title }}
+            </span>
+            <span *ngIf="eventsForDay(day.date).length > 3" class="more-chip">
+              +{{ eventsForDay(day.date).length - 3 }} more
+            </span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="agenda-card">
+    <div class="agenda-header">
+      <h3>
+        <i class="fas fa-calendar-day"></i>
+        {{ selectedDate | date:'fullDate' }}
+      </h3>
+      <button class="hero-action small" type="button" (click)="openCreatePanel()">
+        <i class="fas fa-calendar-plus"></i>
+        Create for this day
+      </button>
+    </div>
+
+    <div class="agenda-list" *ngIf="selectedDayEvents().length > 0; else noEventsTemplate">
+      <article class="agenda-item" *ngFor="let event of selectedDayEvents()">
+        <div class="agenda-time">
+          {{ formatTimeLabel(event.startAt) }} - {{ formatTimeLabel(event.endAt) }}
+        </div>
+        <div class="agenda-body">
+          <header>
+            <h4>{{ event.title }}</h4>
+            <span class="agenda-tag" [ngClass]="eventBadgeClass(event)">{{ event.eventType }}</span>
+          </header>
+          <p *ngIf="event.description">{{ event.description }}</p>
+          <p class="agenda-meta" *ngIf="event.location">
+            <i class="fas fa-location-dot"></i>
+            {{ event.location }}
+          </p>
+          <p class="agenda-meta" *ngIf="event.creatorName">
+            <i class="fas fa-user"></i>
+            {{ event.source === 'TASK_DEADLINE' ? 'System deadline' : ('Created by ' + event.creatorName) }}
+          </p>
+        </div>
+        <button
+          *ngIf="event.source === 'CUSTOM' && event.editable"
+          type="button"
+          class="delete-btn"
+          (click)="deleteEvent(event)">
+          <i class="fas fa-trash"></i>
+        </button>
+      </article>
+    </div>
+
+    <ng-template #noEventsTemplate>
+      <div class="empty-agenda">
+        <i class="fas fa-mug-hot"></i>
+        <p>No events for this day.</p>
+      </div>
+    </ng-template>
+  </section>
+
+  <section class="compose-panel" *ngIf="showCreatePanel">
+    <div class="compose-header">
+      <h3>Create Event</h3>
+      <button type="button" class="icon-btn" (click)="closeCreatePanel()">
+        <i class="fas fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="compose-content">
+      <label>
+        Title
+        <input type="text" [(ngModel)]="createForm.title" placeholder="Sprint review with students" />
+      </label>
+
+      <label>
+        Type
+        <select [(ngModel)]="createForm.eventType">
+          <option value="MEETING">Meeting</option>
+          <option value="CLASS">Class</option>
+          <option value="REVIEW">Review</option>
+          <option value="CUSTOM">Custom</option>
+        </select>
+      </label>
+
+      <label>
+        Start
+        <input type="datetime-local" [(ngModel)]="createForm.startAt" (change)="refreshAvailability()" />
+      </label>
+
+      <label>
+        End
+        <input type="datetime-local" [(ngModel)]="createForm.endAt" (change)="refreshAvailability()" />
+      </label>
+
+      <label>
+        Location
+        <input type="text" [(ngModel)]="createForm.location" placeholder="Room B-204 or Meet URL" />
+      </label>
+
+      <label>
+        Description
+        <textarea rows="3" [(ngModel)]="createForm.description" placeholder="Agenda, context, links..."></textarea>
+      </label>
+
+      <div class="invite-block">
+        <label>
+          Invite users
+          <input
+            type="text"
+            [(ngModel)]="userSearchQuery"
+            (input)="onUserQueryChanged()"
+            placeholder="Search by name or email" />
+        </label>
+
+        <div class="search-results" *ngIf="userSuggestions.length > 0">
+          <button
+            type="button"
+            class="search-item"
+            *ngFor="let user of userSuggestions"
+            (click)="addInvitee(user)">
+            <div>
+              <strong>{{ user.fullName }}</strong>
+              <small>{{ user.email }}</small>
+            </div>
+            <span>{{ user.role }}</span>
+          </button>
+        </div>
+
+        <div class="invitees" *ngIf="selectedInvitees.length > 0">
+          <span class="invitee-pill" *ngFor="let user of selectedInvitees">
+            {{ user.fullName }}
+            <button type="button" (click)="removeInvitee(user.id)">
+              <i class="fas fa-xmark"></i>
+            </button>
+          </span>
+        </div>
+      </div>
+
+      <div class="availability-list" *ngIf="availability.length > 0">
+        <h4>Availability</h4>
+        <div class="availability-row" *ngFor="let item of availability" [ngClass]="availabilityClass(item)">
+          <div>
+            <strong>{{ item.fullName }}</strong>
+            <small>{{ item.role }} • {{ item.email }}</small>
+          </div>
+          <div class="availability-status">
+            {{ item.availabilityStatus }}
+            <span *ngIf="item.conflictCount > 0">({{ item.conflictCount }} conflicts)</span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="createError" class="calendar-error">{{ createError }}</div>
+
+      <div class="compose-actions">
+        <button type="button" class="ghost-btn" (click)="closeCreatePanel()">Cancel</button>
+        <button type="button" class="hero-action" (click)="saveEvent()" [disabled]="creatingEvent">
+          <i class="fas fa-circle-notch fa-spin" *ngIf="creatingEvent"></i>
+          <span *ngIf="!creatingEvent">Save Event</span>
+          <span *ngIf="creatingEvent">Saving...</span>
+        </button>
+      </div>
+    </div>
+  </section>
+</div>

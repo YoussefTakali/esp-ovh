@@ -1,0 +1,11 @@
+flowchart LR
+    A[Academic Structure\nRoles, classes, groups, tasks] --> B[Repository Creation\nAuto provisioning and linking]
+    B --> C[Student Commits and Branches\nCode development activity]
+    C --> D[Activity Tracking\nCommits, branches, deadlines, attempts]
+    D --> E[AI-assisted Analysis\nSignals, risk indicators, contribution insights]
+    E --> F[Teacher Review\nValidation and pedagogical judgement]
+    F --> G[Feedback and Grading\nPersonalized feedback and final evaluation]
+
+    H[Security and Governance\nJWT, role-based access, webhook validation] -.supports.-> B
+    H -.supports.-> D
+    H -.supports.-> F

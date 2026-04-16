@@ -1,0 +1,276 @@
+/* Teacher Repositories - Red Theme Harmonized */
+.teacher-repositories {
+  padding: 32px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.repositories-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-content h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #a71617;
+}
+
+.header-content p {
+  font-size: 1.1rem;
+  color: #555;
+  margin: 0;
+}
+
+.refresh-btn {
+  background: #a71617;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+.refresh-btn:hover:not(:disabled) {
+  background: #680f0a;
+}
+.refresh-btn .spinning {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.add-repo-btn {
+  background: #a71617;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 16px;
+  box-shadow: none;
+  padding: 12px 24px;
+  border: none;
+  margin-left: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+.add-repo-btn i {
+  margin-right: 8px;
+  font-size: 14px;
+}
+.add-repo-btn:hover {
+  background: #c82333;
+}
+
+.loading-container, .error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+.loading-spinner {
+  text-align: center;
+  color: #a71617;
+}
+.loading-spinner i {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+.loading-spinner p {
+  font-size: 1.1rem;
+}
+.error-message {
+  text-align: center;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 32px;
+  border-radius: 12px;
+}
+.retry-btn {
+  background: #a71617;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  margin-top: 16px;
+  cursor: pointer;
+}
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: #6c757d;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.empty-state i {
+  font-size: 4rem;
+  margin-bottom: 24px;
+  color: #a71617;
+}
+.repositories-content {
+  margin-top: 16px;
+}
+.repositories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 24px;
+}
+.repository-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+.repository-card:hover {
+  transform: translateY(-2px);
+}
+.repository-header {
+  background: linear-gradient(135deg, #a71617, #e74c3c);
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.repo-name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.repo-name h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.repo-name i {
+  font-size: 1.5rem;
+}
+.repo-privacy {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(248, 14, 14, 0.2);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.repository-content {
+  padding: 20px;
+}
+.repo-description {
+  margin: 0 0 16px 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  font-style: italic;
+}
+.repo-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 14px;
+}
+.meta-item i {
+  color: #a71617;
+  width: 16px;
+}
+.repository-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+}
+.repo-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.action-btn {
+  background: #fff;
+  color: #a71617;
+  border: 1.5px solid #a71617;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.action-btn.details-btn:hover {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+.action-btn.view-btn:hover {
+  background: #a71617;
+  color: white;
+  border-color: #a71617;
+}
+.action-btn.clone-btn:hover {
+  background: #e74c3c;
+  color: white;
+  border-color: #e74c3c;
+}
+.repo-access {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.access-badge {
+  background: #f8f9fa;
+  color: #a71617;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1.5px solid #a71617;
+}
+.access-badge.member {
+  background: #eafaf1;
+  color: #28a745;
+  border-color: #28a745;
+}
+@media (max-width: 768px) {
+  .teacher-repositories {
+    padding: 12px;
+  }
+  .repositories-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+  }
+  .repositories-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}

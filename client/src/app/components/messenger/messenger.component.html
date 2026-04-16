@@ -1,0 +1,138 @@
+<div class="messenger-shell">
+  <section class="messenger-sidebar">
+    <div class="panel-header">
+      <div>
+        <p class="kicker">Workspace Communication</p>
+        <h2>Messenger</h2>
+      </div>
+      <button class="ghost-btn" type="button" (click)="loadConversations(false)">
+        <i class="fas fa-rotate"></i>
+      </button>
+    </div>
+
+    <div class="search-field">
+      <i class="fas fa-magnifying-glass"></i>
+      <input
+        type="text"
+        placeholder="Search conversations"
+        [(ngModel)]="conversationSearch" />
+    </div>
+
+    <div class="list-block">
+      <div class="block-title">Conversations</div>
+
+      <div class="empty-state" *ngIf="loadingConversations && conversations.length === 0">
+        Loading conversations...
+      </div>
+
+      <button
+        type="button"
+        class="conversation-item"
+        *ngFor="let conversation of filteredConversations(); trackBy: trackConversation"
+        [class.active]="selectedConversation?.id === conversation.id"
+        (click)="openConversation(conversation)">
+        <div class="conversation-head">
+          <strong>{{ getConversationTitle(conversation) }}</strong>
+          <span *ngIf="conversation.lastMessageAt">{{ conversation.lastMessageAt | date:'shortTime' }}</span>
+        </div>
+        <p>{{ getConversationHint(conversation) }}</p>
+      </button>
+
+      <div class="empty-state" *ngIf="!loadingConversations && filteredConversations().length === 0">
+        No conversation found.
+      </div>
+    </div>
+
+    <div class="list-block contacts-block">
+      <div class="block-title">Start a new chat</div>
+      <div class="search-field small">
+        <i class="fas fa-user-plus"></i>
+        <input
+          type="text"
+          placeholder="Search allowed contacts"
+          [(ngModel)]="contactSearch" />
+      </div>
+
+      <div class="empty-state" *ngIf="loadingContacts">Loading contacts...</div>
+
+      <button
+        type="button"
+        class="contact-item"
+        *ngFor="let contact of filteredContacts(); trackBy: trackContact"
+        [disabled]="creatingConversationId === contact.id"
+        (click)="startDirectConversation(contact)">
+        <div>
+          <strong>{{ contact.fullName }}</strong>
+          <small>{{ contact.email }}</small>
+        </div>
+        <span>
+          {{ creatingConversationId === contact.id ? 'Opening...' : contact.role }}
+        </span>
+      </button>
+
+      <div class="empty-state" *ngIf="!loadingContacts && filteredContacts().length === 0">
+        No allowed contacts available.
+      </div>
+    </div>
+  </section>
+
+  <section class="messenger-main" *ngIf="selectedConversation; else selectConversationTemplate">
+    <header class="thread-header">
+      <div>
+        <h3>{{ getConversationTitle(selectedConversation) }}</h3>
+        <p>{{ getSelectedConversationMembers() }}</p>
+      </div>
+      <button class="ghost-btn" type="button" (click)="loadMessages(selectedConversation.id, true)">
+        <i class="fas fa-rotate"></i>
+        Refresh
+      </button>
+    </header>
+
+    <div class="thread-messages" *ngIf="!loadingMessages; else loadingMessagesTemplate">
+      <article
+        class="message-row"
+        *ngFor="let message of messages; trackBy: trackMessage"
+        [class.own]="isOwnMessage(message)">
+        <div class="bubble">
+          <p class="sender" *ngIf="!isOwnMessage(message)">{{ message.senderName }} • {{ message.senderRole }}</p>
+          <p class="content">{{ message.content }}</p>
+          <span class="time">{{ message.sentAt | date:'short' }}</span>
+        </div>
+      </article>
+
+      <div class="empty-thread" *ngIf="messages.length === 0">
+        No messages yet. Say hello.
+      </div>
+    </div>
+
+    <ng-template #loadingMessagesTemplate>
+      <div class="empty-thread">Loading messages...</div>
+    </ng-template>
+
+    <div class="composer">
+      <textarea
+        rows="2"
+        placeholder="Type a message"
+        [(ngModel)]="messageDraft"
+        (keydown.enter)="onComposerEnter($event)"></textarea>
+      <button type="button" class="send-btn" [disabled]="sendingMessage" (click)="sendMessage()">
+        <i class="fas fa-paper-plane" *ngIf="!sendingMessage"></i>
+        <i class="fas fa-circle-notch fa-spin" *ngIf="sendingMessage"></i>
+        {{ sendingMessage ? 'Sending...' : 'Send' }}
+      </button>
+    </div>
+
+    <p class="error-banner" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </section>
+
+  <ng-template #selectConversationTemplate>
+    <section class="messenger-main empty-main">
+      <div class="empty-card">
+        <i class="fas fa-comments"></i>
+        <h3>Select a conversation</h3>
+        <p>Choose an existing chat or start a new one from allowed contacts.</p>
+      </div>
+      <p class="error-banner" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </section>
+  </ng-template>
+</div>

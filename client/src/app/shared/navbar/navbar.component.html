@@ -1,0 +1,84 @@
+<div class="n-container">
+  <div class="n-row" style="display: flex; justify-content: space-between; align-items: center; padding: 0 1rem;">
+    <!-- Left side: Hamburger + Title -->
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button
+        type="button"
+        class="hamburger d-lg-block d-none"
+        [class.active]="isSidebarVisible"
+        (click)="onHamburgerClick($event)"
+        aria-label="Toggle sidebar"
+      >
+        <svg viewBox="0 0 32 32">
+          <path class="line line-top-bottom"
+            d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22">
+          </path>
+          <path class="line" d="M7 16 27 16"></path>
+        </svg>
+      </button>
+      <img class="n-logo" src="assets/esprithub-logo.svg" alt="EspritHub" />
+    </div>
+
+    <div class="n-functionalities" style="display: flex; align-items: center; ">
+      <button type="button" class="n-messenger-btn" (click)="openMessenger($event)" aria-label="Open messenger">
+        <i class="n-messages fas fa-comments"></i>
+      </button>
+
+      <button type="button" class="n-notif" style="position: relative;" (click)="toggleNotificationsPanel($event)" aria-label="Open notifications panel">
+        <i class="n-notification-icon fas fa-bell" style="color:#a71617;"></i>
+        <div class="n-active" *ngIf="unreadCount > 0"></div>
+      </button>
+
+      <div class="n-notif-panel" *ngIf="notificationPanelOpen" (click)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()">
+        <div class="n-notif-panel-header">
+          <h4>Recent Notifications</h4>
+          <span *ngIf="unreadCount > 0">{{ unreadCount }} new</span>
+        </div>
+
+        <div class="n-notif-loading" *ngIf="loadingRecentNotifications">Loading...</div>
+        <div class="n-notif-empty" *ngIf="!loadingRecentNotifications && recentNotifications.length === 0">No notifications yet.</div>
+
+        <div class="n-notif-list" *ngIf="!loadingRecentNotifications && recentNotifications.length > 0">
+          <button
+            type="button"
+            class="n-notif-item"
+            *ngFor="let notification of recentNotifications"
+            [class.unread]="!notification.read"
+            (click)="markRecentAsRead(notification, $event)"
+          >
+            <div class="n-notif-item-title">{{ notification.title }}</div>
+            <div class="n-notif-item-message">{{ notification.message }}</div>
+            <div class="n-notif-item-time">{{ notification.timestamp | date: 'short' }}</div>
+          </button>
+        </div>
+
+        <button type="button" class="n-see-all" (click)="openAllNotifications($event)">
+          See all notifications
+        </button>
+      </div>
+
+        <button type="button" class="n-infos" style="display: flex; align-items: center; gap: 0.5rem;" (click)="toggleDropdown($event)">
+          <img class="n-profilepic" src="assets/user.png" alt="profile" />
+          <span class="n-name">{{ getUserDisplayName() }}</span>
+        </button>
+          <div class="n-dropdown-menu" *ngIf="dropdownOpen" (mousedown)="$event.stopPropagation()" (click)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()">
+            <div class="n-dropdown-menu-item">
+              <a class="n-link" [routerLink]="['/profile']">
+                <i class="fas fa-user"></i> Profile
+              </a>
+            </div>
+            <div class="n-dropdown-menu-item">
+              <a class="n-link" (click)="editProfile()">
+                <i class="fas fa-cog"></i> Settings
+              </a>
+            </div>
+            <div class="n-dropdown-menu-item">
+              <a class="n-link" (click)="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </a>
+            </div>
+          </div>
+        
+    </div>
+  </div>
+</div>
