@@ -33,6 +33,14 @@ if ([string]::IsNullOrWhiteSpace($env:APP_CORS_ALLOWED_ORIGINS)) {
 }
 $env:GITHUB_OAUTH_REDIRECT_URI = "$($env:FRONTEND_URL.TrimEnd('/'))/auth/github/callback"
 
+# Normalize AI provider key variable names.
+if ([string]::IsNullOrWhiteSpace($env:NVIDIA_API_KEY) -and -not [string]::IsNullOrWhiteSpace($env:AI_PROVIDER_API_KEY)) {
+  $env:NVIDIA_API_KEY = $env:AI_PROVIDER_API_KEY
+}
+if ([string]::IsNullOrWhiteSpace($env:NVIDIA_API_KEY) -and -not [string]::IsNullOrWhiteSpace($env:OPENAI_API_KEY)) {
+  $env:NVIDIA_API_KEY = $env:OPENAI_API_KEY
+}
+
 # Set GitHub OAuth environment variables
 Write-Host "Setting GitHub OAuth Configuration..."
 $env:GITHUB_CLIENT_ID = "Ov23lipGNQsjO5oFhS91"
@@ -72,7 +80,7 @@ Write-Host "  AI Base URL: $env:AI_BASE_URL"
 Write-Host "  AI Model: $env:AI_MODEL"
 
 if ([string]::IsNullOrWhiteSpace($env:NVIDIA_API_KEY)) {
-  Write-Host "  NVIDIA API Key: NOT SET"
+  Write-Host "  NVIDIA API Key: NOT SET (AI module will return provider key not configured)"
 } else {
   Write-Host "  NVIDIA API Key: [HIDDEN]"
 }

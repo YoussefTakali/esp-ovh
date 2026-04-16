@@ -24,6 +24,17 @@ $env:SPRING_DATASOURCE_PASSWORD = $env:DOCKER_DB_PASSWORD
 $env:AI_BASE_URL = "https://integrate.api.nvidia.com/v1"
 $env:AI_MODEL = "minimaxai/minimax-m2.7"
 
+# Optional key aliases:
+# - AI_PROVIDER_API_KEY (recommended generic name)
+# - OPENAI_API_KEY (legacy fallback)
+if ([string]::IsNullOrWhiteSpace($env:NVIDIA_API_KEY) -and -not [string]::IsNullOrWhiteSpace($env:AI_PROVIDER_API_KEY)) {
+	$env:NVIDIA_API_KEY = $env:AI_PROVIDER_API_KEY
+}
+
+if ([string]::IsNullOrWhiteSpace($env:NVIDIA_API_KEY) -and -not [string]::IsNullOrWhiteSpace($env:OPENAI_API_KEY)) {
+	$env:NVIDIA_API_KEY = $env:OPENAI_API_KEY
+}
+
 # Never overwrite NVIDIA_API_KEY with an empty value.
 # Keep the current shell value (or inherited environment value) if already set.
 

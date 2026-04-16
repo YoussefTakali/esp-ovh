@@ -22,6 +22,18 @@ export SPRING_DATASOURCE_PASSWORD="${DOCKER_DB_PASSWORD}"
 # AI provider (NVIDIA OpenAI-compatible endpoint)
 export AI_BASE_URL="https://integrate.api.nvidia.com/v1"
 export AI_MODEL="minimaxai/minimax-m2.7"
+export NVIDIA_API_KEY="${NVIDIA_API_KEY:-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}"
+
+# Optional key aliases:
+# - AI_PROVIDER_API_KEY (recommended generic name)
+# - OPENAI_API_KEY (legacy fallback)
+if [ -z "${NVIDIA_API_KEY:-}" ] && [ -n "${AI_PROVIDER_API_KEY:-}" ]; then
+	export NVIDIA_API_KEY="${AI_PROVIDER_API_KEY}"
+fi
+
+if [ -z "${NVIDIA_API_KEY:-}" ] && [ -n "${OPENAI_API_KEY:-}" ]; then
+	export NVIDIA_API_KEY="${OPENAI_API_KEY}"
+fi
 
 # Never overwrite NVIDIA_API_KEY with an empty value.
 # Keep the current shell value (or inherited environment value) if already set.

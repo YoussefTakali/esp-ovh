@@ -39,6 +39,17 @@ export FRONTEND_URL="${FRONTEND_URL:-https://esprithub.app}"
 export APP_CORS_ALLOWED_ORIGINS="${APP_CORS_ALLOWED_ORIGINS:-https://esprithub.app,https://www.esprithub.app}"
 export GITHUB_OAUTH_REDIRECT_URI="${FRONTEND_URL%/}/auth/github/callback"
 
+# Normalize AI provider key variable names.
+if [ -z "${NVIDIA_API_KEY:-}" ] && [ -n "${AI_PROVIDER_API_KEY:-}" ]; then
+    export NVIDIA_API_KEY="${AI_PROVIDER_API_KEY}"
+fi
+
+if [ -z "${NVIDIA_API_KEY:-}" ] && [ -n "${OPENAI_API_KEY:-}" ]; then
+    export NVIDIA_API_KEY="${OPENAI_API_KEY}"
+fi
+
+export NVIDIA_API_KEY="${NVIDIA_API_KEY:-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}"
+
 echo "👤 Admin bootstrap seeding enabled: ${BOOTSTRAP_ADMIN_EMAIL}"
 echo "🔐 Admin bootstrap password: [HIDDEN]"
 
@@ -51,6 +62,11 @@ echo "   Organization: ${GITHUB_ORG_NAME:-'NOT SET'}"
 echo "   Frontend URL: ${FRONTEND_URL}"
 echo "   CORS Origins: ${APP_CORS_ALLOWED_ORIGINS}"
 echo "   OAuth Redirect URI: ${GITHUB_OAUTH_REDIRECT_URI}"
+if [ -z "${NVIDIA_API_KEY:-}" ]; then
+    echo "   NVIDIA API Key: NOT SET (AI module will return provider key not configured)"
+else
+    echo "   NVIDIA API Key: [HIDDEN]"
+fi
 
 # Start the backend
 echo "🌱 Starting Spring Boot application..."
@@ -62,6 +78,7 @@ export GITHUB_ORG_NAME
 export FRONTEND_URL
 export APP_CORS_ALLOWED_ORIGINS
 export GITHUB_OAUTH_REDIRECT_URI
+export NVIDIA_API_KEY
 export BOOTSTRAP_ADMIN_EMAIL
 export BOOTSTRAP_ADMIN_PASSWORD
 ./mvnw spring-boot:run
