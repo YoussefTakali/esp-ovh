@@ -23,6 +23,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.security.config.Customizer;
 import tn.esprithub.server.config.properties.CorsProperties;
+import tn.esprithub.server.security.filter.ApiPrefixNormalizationFilter;
 import tn.esprithub.server.security.filter.JwtAuthenticationFilter;
 
 import java.util.Arrays;
@@ -36,6 +37,7 @@ import static tn.esprithub.server.security.constants.SecurityConstants.*;
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
+    private final ApiPrefixNormalizationFilter apiPrefixNormalizationFilter;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CorsProperties corsProperties;
 
@@ -105,7 +107,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(apiPrefixNormalizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtAuthenticationFilter, ApiPrefixNormalizationFilter.class)
                 .build();
     }
 

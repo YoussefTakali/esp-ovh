@@ -25,6 +25,13 @@ else
     fi
 fi
 
+# Ensure admin bootstrap values exist for automatic seeding.
+export BOOTSTRAP_ADMIN_EMAIL="${BOOTSTRAP_ADMIN_EMAIL:-Youssef.Takali@esprit.tn}"
+export BOOTSTRAP_ADMIN_PASSWORD="${BOOTSTRAP_ADMIN_PASSWORD:-youssef123}"
+
+echo "👤 Admin bootstrap seeding enabled: ${BOOTSTRAP_ADMIN_EMAIL}"
+echo "🔐 Admin bootstrap password: [HIDDEN]"
+
 # Display the variables (hide secret)
 echo "📋 GitHub OAuth Configuration:"
 echo "   Client ID: ${GITHUB_CLIENT_ID:-'NOT SET'}"
@@ -39,4 +46,6 @@ export GITHUB_CLIENT_ID
 export GITHUB_CLIENT_SECRET
 export GITHUB_SCOPE
 export GITHUB_ORG_NAME
+export BOOTSTRAP_ADMIN_EMAIL
+export BOOTSTRAP_ADMIN_PASSWORD
 ./mvnw spring-boot:run

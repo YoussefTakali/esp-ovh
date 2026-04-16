@@ -8,6 +8,17 @@ Write-Host "Role: ADMIN"
 Write-Host "==================================="
 Write-Host ""
 
+# Ensure admin bootstrap values exist for automatic seeding.
+if ([string]::IsNullOrWhiteSpace($env:BOOTSTRAP_ADMIN_EMAIL)) {
+  $env:BOOTSTRAP_ADMIN_EMAIL = "Youssef.Takali@esprit.tn"
+}
+if ([string]::IsNullOrWhiteSpace($env:BOOTSTRAP_ADMIN_PASSWORD)) {
+  $env:BOOTSTRAP_ADMIN_PASSWORD = "youssef123"
+}
+Write-Host "Admin bootstrap seeding enabled: $env:BOOTSTRAP_ADMIN_EMAIL"
+Write-Host "Admin bootstrap password: [HIDDEN]"
+Write-Host ""
+
 # Set GitHub OAuth environment variables
 Write-Host "Setting GitHub OAuth Configuration..."
 $env:GITHUB_CLIENT_ID = "Ov23lipGNQsjO5oFhS91"
